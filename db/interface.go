@@ -13,17 +13,17 @@ type Table interface {
 	//Set value in table
 	SetX([]byte, template.Node)
 	//Get value in table with name
-	Get(string) (template.Node, qerror.Error)
+	Get([]byte) (template.Node, qerror.Error)
 	//Del value in table with key list
-	Del(...string) int
+	Del(...[]byte) int
 	//Regexp string to get value in table
-	Regexp(string) ([]template.Node, qerror.Error)
+	Regexp([]byte) ([]template.Node, qerror.Error)
 	//Get Iterator with key
 	Iterator([]byte) (iterator.Node, qerror.Error)
 	//Rename src to dst
 	Rename([]byte, []byte) qerror.Error
 	//Cover src to dst, if dst is not found then rename src to dst
-	Cover([]byte, []byte)
+	Cover([]byte, []byte) qerror.Error
 	//key is exist or not
 	Exist([]byte) bool
 }
@@ -42,15 +42,15 @@ func SetX(key []byte, value template.Node) {
 	Manager.SetX(key, value)
 }
 
-func Get(key string) (template.Node, qerror.Error) {
+func Get(key []byte) (template.Node, qerror.Error) {
 	return Manager.Get(key)
 }
 
-func Del(key... string) int {
+func Del(key... []byte) int {
 	return Manager.Del(key...)
 }
 
-func Regexp(str string) ([]template.Node, qerror.Error) {
+func Regexp(str []byte) ([]template.Node, qerror.Error) {
 	return Manager.Regexp(str)
 }
 
