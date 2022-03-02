@@ -17,13 +17,18 @@ type Api struct {
 	ReadOnly bool
 }
 
-type Result struct {
+type Response struct {
 	Err qerror.Error
 	Msg []byte
 	Persistence bool
 }
 
+type Request struct {
+	Value []interface{}
+	Api []byte
+}
+
 type Class interface {
-	Do([]byte) Result
+	Do(Request) Response
 	ApiList() []Api
 }

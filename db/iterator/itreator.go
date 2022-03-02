@@ -6,4 +6,5 @@ type Node interface {
 	Value() template.Node
 	SetValue(template.Node)
 	Key() []byte
+	Hex() int
 }
