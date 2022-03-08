@@ -1,4 +1,4 @@
-package iterator
+package hash
 
 import "github.com/culionbear/qtool/template"
 
@@ -7,4 +7,6 @@ type Node interface {
 	SetValue(template.Node)
 	Key() []byte
 	Hex() uint32
+	Next() Node
+	unsafeGetKey() []byte
 }

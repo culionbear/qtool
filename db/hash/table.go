@@ -1,6 +1,8 @@
 package hash
 
-import "math"
+import (
+	"math"
+)
 
 func (m *Manager) resize() {
 	oldCap, oldThr := m.cap, m.threshold
@@ -28,7 +30,44 @@ func (m *Manager) resize() {
 		}
 	}
 	m.threshold = newThr
-	newTable := make([]*link, newCap)
-	//todo: table转移
+	newTable := make([]Node, newCap)
+	for i := 0; i < oldCap; i ++ {
+		if m.table[i] == nil {
+			continue
+		}
+		if m.table[i].Next() == nil {
+			newTable[m.table[i].Hex() & uint32(newCap - 1)] = m.table[i]
+		} else if n, ok := m.table[i].(*treeNode); ok { //is rbt
+			_ = n
+		} else {
+			h := m.table[i].(*listNode)
+			var loHead, loTail *listNode
+			var hiHead, hiTail *listNode
+			for n := h.next; n != nil; n = n.next {
+				if n.code & uint32(oldCap) == 0 {
+					if loTail == nil {
+						loHead = n
+					} else {
+						loTail.next = n
+					}
+					loTail = n
+				} else {
+					if hiTail == nil {
+						hiHead = n
+					} else {
+						hiTail.next = n
+					}
+					hiTail = n
+				}
+			}
+			if loTail != nil {
+				newTable[i] = loHead
+			}
+			if hiTail != nil {
+				newTable[i + oldCap] = hiHead
+			}
+		}
+	}
+	m.cap = newCap
 	m.table = newTable
 }

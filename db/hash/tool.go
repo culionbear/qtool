@@ -1,6 +1,8 @@
 package hash
 
-import "internal/bytealg"
+import (
+	"internal/bytealg"
+)
 
 func compare(a, b []byte) bool {
 	return bytealg.Compare(a, b) == 0
