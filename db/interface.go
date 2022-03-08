@@ -14,9 +14,9 @@ type Table interface {
 	//Update value in table
 	Update([]byte, template.Node) qerror.Error
 	//Get value in table with name
-	Get([]byte) (template.Node, qerror.Error)
+	Get([]byte) template.Node
 	//Gets value list in table with name list
-	Gets(...[]byte) ([]template.Node)
+	Gets(...[]byte) []template.Node
 	//Del value in table with key list
 	Del(...[]byte) int
 	//Regexp string to get value in table

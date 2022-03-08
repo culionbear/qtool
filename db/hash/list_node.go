@@ -11,7 +11,7 @@ type listNode struct {
 	next	*listNode
 }
 
-func newListNode(key []byte, code uint32, value template.Node) *listNode{
+func newListNode(key []byte, code uint32, value template.Node) *listNode {
 	return &listNode{
 		key: key,
 		value: value,

@@ -4,11 +4,30 @@ import (
 	"github.com/culionbear/qtool/template"
 )
 
+const(
+	red		= true
+	black	= false
+)
+
 type treeNode struct {
 	key		[]byte
 	value	template.Node
 	code	uint32
 	next	*treeNode
+
+	color	bool
+	parent	*treeNode
+	left	*treeNode
+	right	*treeNode
+	prev	*treeNode
+}
+
+func newTreeode(key []byte, code uint32, value template.Node) *treeNode {
+	return &treeNode{
+		key: key,
+		value: value,
+		code: code,
+	}
 }
 
 func (m *treeNode) Value() template.Node {

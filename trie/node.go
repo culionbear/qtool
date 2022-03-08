@@ -4,12 +4,6 @@ import (
 	"github.com/culionbear/qtool/qerror"
 )
 
-var(
-	ErrKeyIsExists = qerror.Error("key is exists")
-	ErrKeyIsNotFound = qerror.Error("key is not found")
-	ErrKeyText = qerror.Error("the key must be lowercase")
-)
-
 type node struct {
 	value interface{}
 	children [26]*node
@@ -22,14 +16,14 @@ func newNode() *node{
 func (n *node) add(str string, i, length int, v interface{}) qerror.Error {
 	if length == i {
 		if n.value != nil {
-			return ErrKeyIsExists
+			return qerror.Error("key is exists")
 		}
 		n.value = v
 		return nil
 	}
 	k := int(str[i] - 'a')
 	if k < 0 || k >= 26 {
-		return ErrKeyText
+		return qerror.Error("the key must be lowercase")
 	}
 	if n.children[k] == nil {
 		n.children[k] = newNode()
@@ -40,13 +34,13 @@ func (n *node) add(str string, i, length int, v interface{}) qerror.Error {
 func (n *node) get(buf []byte, i, length int) (interface{}, qerror.Error) {
 	if length == i {
 		if n.value == nil {
-			return nil, ErrKeyIsNotFound
+			return nil, qerror.Error("key is not found")
 		}
 		return n.value, nil
 	}
 	k := int(buf[i] - 'a')
 	if k < 0 || k >= 26 {
-		return nil, ErrKeyText
+		return nil, qerror.Error("the key must be lowercase")
 	}
 	if n.children[k] == nil {
 		n.children[k] = newNode()

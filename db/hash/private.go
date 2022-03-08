@@ -71,3 +71,11 @@ func (m *Manager) resize() {
 	m.cap = newCap
 	m.table = newTable
 }
+
+func (m *Manager) treeifyBin(e *listNode) {
+	if m.size < minTreeifyCapacity {
+		m.resize()
+		return
+	}
+
+}

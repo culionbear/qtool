@@ -11,8 +11,9 @@ const(
 )
 
 const(
-	treeifyThreshold	= 1 << 3
-	minTreeifyCapacity	= 1 << 6
+	treeifyThreshold		= 8
+	unTreeifyThreshold		= 6
+	minTreeifyCapacity		= 64
 )
 
 const(
@@ -55,11 +56,7 @@ func (m *Manager) Set(key []byte, value template.Node) qerror.Error {
 				if n.next == nil {
 					n.next = newListNode(key, code, value)
 					if size >= treeifyThreshold - 1 {
-						if m.size < minTreeifyCapacity {
-							m.resize()
-						} else {
-							//todo to rbt
-						}
+						m.treeifyBin(h)
 					}
 					break
 				}
@@ -96,11 +93,7 @@ func (m *Manager) SetX(key []byte, value template.Node) {
 					n.next = newListNode(key, code, value)
 					m.size ++
 					if size >= treeifyThreshold {
-						if m.size < minTreeifyCapacity {
-							m.resize()
-						} else {
-							//todo to rbt
-						}
+						m.treeifyBin(h)
 					}
 					break
 				}
@@ -139,39 +132,31 @@ func (m *Manager) Update(key []byte, value template.Node) qerror.Error {
 }
 
 //Get 获取元素
-func (m *Manager) Get(key []byte) (template.Node, qerror.Error) {
+func (m *Manager) Get(key []byte) template.Node {
 	code := hashCode(key)
 	i := code & uint32(m.cap - 1)
 	if m.table[i] == nil {
-		return nil, qerror.New(append(key, []byte(" is not found")...))
+		return nil
 	}
 	if compare(m.table[i].unsafeGetKey(), key) {
-		return m.table[i].Value(), nil
-	} else if n, ok := m.table[i].(*treeNode); ok {//is rbt
-		_ = n
+		return m.table[i].Value()
 	} else {
-		h := m.table[i].(*listNode)
-		for n := h.next; n != nil; n = n.next {
-			if compare(n.key, key) {
-				return n.value, nil
+		for n := m.table[i].Next(); n != nil; n = n.Next() {
+			if compare(n.unsafeGetKey(), key) {
+				return n.Value()
 			}
 		}
 	}
-	return nil, qerror.New(append(key, []byte(" is not found")...))
+	return nil
 }
 
 //Gets 获取元素列表
 func (m *Manager) Gets(keys... []byte) []template.Node {
 	list := make([]template.Node, len(keys))
-	i := 0
-	for _, v := range keys {
-		n, err := m.Get(v)
-		if err == nil {
-			list[i] = n
-			i ++
-		}
+	for k, v := range keys {
+		list[k] = m.Get(v)
 	}
-	return list[:i]
+	return list
 }
 
 //Del 删除元素并返回成功删除个数
