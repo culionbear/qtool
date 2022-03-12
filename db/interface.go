@@ -17,14 +17,16 @@ type Table interface {
 	Get([]byte) template.Node
 	//Gets value list in table with name list
 	Gets(...[]byte) []template.Node
-	//Del value in table with key list
-	Del(...[]byte) int
+	//Del node in table with key
+	Del([]byte) qerror.Error
+	//Dels node int table with key list
+	Dels(...[]byte) int
 	//Regexp string to get value in table
-	Regexp([]byte) ([]template.Node, qerror.Error)
+	Regexp([]byte) [][]byte
 	//Get Iterator with key
-	Iterator([]byte) (hash.Node, qerror.Error)
+	Iterator([]byte) hash.Node
 	//Range iterators
-	Iterators([]byte, func(hash.Node) bool) qerror.Error
+	Iterators([]byte, func(hash.Node) bool)
 	//Rename src to dst
 	Rename([]byte, []byte) qerror.Error
 	//Cover src to dst, if dst is not found then rename src to dst

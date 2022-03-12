@@ -7,6 +7,4 @@ type Node interface {
 	SetValue(template.Node)
 	Key() []byte
 	Hex() uint32
-	Next() Node
-	unsafeGetKey() []byte
 }

@@ -1,11 +1,11 @@
 package hash
 
 import (
-	"internal/bytealg"
+	"bytes"
 )
 
 func compare(a, b []byte) bool {
-	return bytealg.Compare(a, b) == 0
+	return bytes.Compare(a, b) == 0
 }
 
 func hashCode(buf []byte) uint32 {

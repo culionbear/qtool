@@ -30,52 +30,25 @@ func (m *Manager) resize() {
 		}
 	}
 	m.threshold = newThr
-	newTable := make([]Node, newCap)
+	newTable := make([]*list, newCap)
 	for i := 0; i < oldCap; i ++ {
 		if m.table[i] == nil {
 			continue
 		}
-		if m.table[i].Next() == nil {
-			newTable[m.table[i].Hex() & uint32(newCap - 1)] = m.table[i]
-		} else if n, ok := m.table[i].(*treeNode); ok { //is rbt
-			_ = n
+		if m.table[i].head.next == nil {
+			newTable[m.table[i].head.code & uint32(newCap - 1)] = m.table[i]
 		} else {
-			h := m.table[i].(*listNode)
-			var loHead, loTail *listNode
-			var hiHead, hiTail *listNode
-			for n := h.next; n != nil; n = n.next {
-				if n.code & uint32(oldCap) == 0 {
-					if loTail == nil {
-						loHead = n
-					} else {
-						loTail.next = n
-					}
-					loTail = n
-				} else {
-					if hiTail == nil {
-						hiHead = n
-					} else {
-						hiTail.next = n
-					}
-					hiTail = n
-				}
-			}
-			if loTail != nil {
-				newTable[i] = loHead
-			}
-			if hiTail != nil {
-				newTable[i + oldCap] = hiHead
-			}
+			newTable[i], newTable[i + oldCap] = m.table[i].resize(uint32(oldCap) )
 		}
 	}
 	m.cap = newCap
 	m.table = newTable
 }
 
-func (m *Manager) treeifyBin(e *listNode) {
-	if m.size < minTreeifyCapacity {
-		m.resize()
-		return
+func (m *Manager) get(key []byte) *node {
+	i := hashCode(key) & uint32(m.cap - 1)
+	if m.table[i] == nil {
+		return nil
 	}
-
+	return m.table[i].get(key)
 }
