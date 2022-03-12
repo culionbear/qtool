@@ -81,6 +81,29 @@ func (m *list) get(key []byte) *node {
 	return nil
 }
 
+func (m *list) del(key []byte) (bool, qerror.Error) {
+	if compare(m.head.key, key) {
+		if m.head.next == nil {
+			return true, nil
+		}
+		m.head = m.head.next
+		m.head.last = nil
+	} else if compare(m.tail.key, key) {
+		m.tail = m.tail.last
+		m.tail.next = nil
+	} else {
+		for n := m.head.next; n != m.tail; n = n.next {
+			if compare(n.key, key) {
+				n.last.next = n.next
+				n.next.last = n.last
+				return false, nil
+			}
+		}
+		return false, qerror.New(append(key, []byte(" is not found")...))
+	}
+	return false, nil
+}
+
 func (m *list) pushBackNode(n *node) {
 	n.last, n.next = m.tail, nil
 	m.tail.next = n
@@ -110,11 +133,20 @@ func (m *list) resize(cap uint32) (*list, *list) {
 			hiTail = n
 		}
 	}
-	return &list{
+	var lo, hi *list
+	if loHead != nil {
+		loTail.next = nil
+		lo = &list{
 			head: loHead,
 			tail: loTail,
-		}, &list{
+		}
+	}
+	if hiHead != nil {
+		hiTail.next = nil
+		hi = &list{
 			head: hiHead,
 			tail: hiTail,
 		}
+	}
+	return lo, hi
 }

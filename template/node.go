@@ -2,6 +2,8 @@ package template
 
 type Node interface {
 	Type() []byte
+	Serialize() []byte
+	Deseriallize([]byte)
 }
 
-type NewNode func() Node
+type NewNode func([]byte) Node

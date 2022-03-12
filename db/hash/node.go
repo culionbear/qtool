@@ -38,20 +38,6 @@ func (m *node) Hex() uint32 {
 	return m.code
 }
 
-func (m *node) resize(key []byte, code uint32) {
-	m.deled()
-	m.rename(key, code)
-}
-
-func (m *node) deled() {
-	if m.last != nil {
-		m.last.next = m.next
-	}
-	if m.next != nil {
-		m.next.last = m.last
-	}
-}
-
 func (m *node) rename(key []byte, code uint32) {
 	m.key = key
 	m.code = code

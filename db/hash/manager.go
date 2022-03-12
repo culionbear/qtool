@@ -32,11 +32,12 @@ func New() *Manager {
 	}
 }
 
+//TODO:有序链表
 //Set 添加kv至map，若key存在则返回error
 func (m *Manager) Set(key []byte, value template.Node) qerror.Error {
 	code := hashCode(key)
 	i := code & uint32(m.cap-1)
-	if m.table[i] != nil {
+	if m.table[i] == nil {
 		m.table[i] = newList(key, code, value)
 	} else {
 		if err := m.table[i].set(key, code, value); err != nil {
@@ -54,7 +55,7 @@ func (m *Manager) Set(key []byte, value template.Node) qerror.Error {
 func (m *Manager) SetX(key []byte, value template.Node) {
 	code := hashCode(key)
 	i := code & uint32(m.cap-1)
-	if m.table[i] != nil {
+	if m.table[i] == nil {
 		m.table[i] = newList(key, code, value)
 		m.size++
 	} else {
@@ -69,7 +70,7 @@ func (m *Manager) SetX(key []byte, value template.Node) {
 func (m *Manager) Update(key []byte, value template.Node) qerror.Error {
 	code := hashCode(key)
 	i := code & uint32(m.cap-1)
-	if m.table[i] != nil {
+	if m.table[i] == nil {
 		return qerror.New(append(key, []byte(" is not found")...))
 	}
 	return m.table[i].update(key, code, value)
@@ -100,10 +101,15 @@ func (m *Manager) Del(key []byte) qerror.Error {
 	if m.table[i] == nil {
 		return qerror.New(append(key, []byte(" is not found")...))
 	}
-	if n := m.table[i].get(key); n != nil {
-		n.deled()
+	flag, err := m.table[i].del(key)
+	if err != nil {
+		return err
 	}
-	return qerror.New(append(key, []byte(" is not found")...))
+	if flag {
+		m.table[i] = nil
+	}
+	m.size--
+	return nil
 }
 
 //Dels 删除元素集并返回成功的个数
@@ -154,21 +160,22 @@ func (m *Manager) Iterators(key []byte, f func(Node) bool) {
 	if m.size == 0 {
 		return
 	}
-	var start int
+	var start, sum int
 	if key != nil {
 		n := m.get(key)
 		start = (int(n.code) & (m.cap - 1)) + 1
 		for k := n; k != nil; k = k.next {
+			sum++
 			if !f(k) {
 				return
 			}
 		}
 	}
-	for i, sum := start, 0; i < m.cap && sum < m.size; i++ {
-		if m.table[i] != nil {
+	for i, num := start, sum; i < m.cap && num < m.size; i++ {
+		if m.table[i] == nil {
 			continue
 		}
-		for n := m.table[i].head; n != nil; n, sum = n.next, sum+1 {
+		for n := m.table[i].head; n != nil; n, num = n.next, num+1 {
 			if !f(n) {
 				return
 			}
@@ -185,14 +192,14 @@ func (m *Manager) Rename(dst, src []byte) qerror.Error {
 	code := hashCode(dst)
 	i := code & uint32(m.cap-1)
 	if m.table[i] == nil {
-		sNode.resize(dst, code)
+		//TODO:sNode.resize(dst, code)
 		m.table[i] = newListWithNode(sNode)
 		return nil
 	}
 	if m.table[i].get(dst) != nil {
 		return qerror.New(append(src, []byte(" is exists")...))
 	}
-	sNode.resize(dst, code)
+	//TODO:sNode.resize(dst, code)
 	m.table[i].pushBackNode(sNode)
 	return nil
 }
@@ -206,16 +213,16 @@ func (m *Manager) Cover(dst, src []byte) qerror.Error {
 	code := hashCode(dst)
 	i := code & uint32(m.cap-1)
 	if m.table[i] == nil {
-		sNode.resize(dst, code)
+		//TODO:sNode.resize(dst, code)
 		m.table[i] = newListWithNode(sNode)
 		return nil
 	}
 	if dNode := m.table[i].get(dst); dNode != nil {
 		dNode.rename(src, sNode.code)
-		sNode.deled()
+		//TODO:sNode.deled()
 		return nil
 	}
-	sNode.resize(dst, code)
+	//TODO:sNode.resize(dst, code)
 	m.table[i].pushBackNode(sNode)
 	return nil
 }

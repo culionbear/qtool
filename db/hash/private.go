@@ -52,3 +52,11 @@ func (m *Manager) get(key []byte) *node {
 	}
 	return m.table[i].get(key)
 }
+
+func (m *Manager) serialize() {
+	list := make([][]byte, 0)
+	m.Iterators(nil, func(n Node) bool {
+		list = append(list, n.Value().Serialize())
+		return true
+	})
+}
