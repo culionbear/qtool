@@ -11,14 +11,17 @@ func init() {
 	m = New()
 }
 
-func Set(str string, f template.Class) qerror.Error {
-	return m.Set(str, f)
+//Set class in trie
+func Set(name []byte, f template.Class) qerror.Error {
+	return m.Set(name, f)
 }
 
-func Get(buf []byte) (template.Class, qerror.Error) {
-	return m.Get(buf)
+//Get class in trie
+func Get(name []byte) (template.Class, qerror.Error) {
+	return m.Get(name)
 }
 
+//List class name
 func List() [][]byte {
 	return m.list
 }

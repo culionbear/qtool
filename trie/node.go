@@ -13,7 +13,7 @@ func newNode() *node {
 	return &node{}
 }
 
-func (n *node) add(str string, i, length int, v interface{}) qerror.Error {
+func (n *node) add(buf []byte, i, length int, v interface{}) qerror.Error {
 	if length == i {
 		if n.value != nil {
 			return qerror.Error("key is exists")
@@ -21,14 +21,14 @@ func (n *node) add(str string, i, length int, v interface{}) qerror.Error {
 		n.value = v
 		return nil
 	}
-	k := int(str[i] - 'a')
+	k := int(buf[i] - 'a')
 	if k < 0 || k >= 26 {
 		return qerror.Error("the key must be lowercase")
 	}
 	if n.children[k] == nil {
 		n.children[k] = newNode()
 	}
-	return n.children[k].add(str, i+1, length, v)
+	return n.children[k].add(buf, i+1, length, v)
 }
 
 func (n *node) get(buf []byte, i, length int) (interface{}, qerror.Error) {

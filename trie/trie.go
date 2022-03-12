@@ -12,8 +12,8 @@ func New() *Manager {
 	}
 }
 
-func (m *Manager) Set(str string, v interface{}) qerror.Error {
-	return m.head.add(str, 0, len(str), v)
+func (m *Manager) Set(buf []byte, v interface{}) qerror.Error {
+	return m.head.add(buf, 0, len(buf), v)
 }
 
 func (m *Manager) Get(buf []byte) (interface{}, qerror.Error) {

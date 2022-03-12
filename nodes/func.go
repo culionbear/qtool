@@ -11,14 +11,17 @@ func init() {
 	m = New()
 }
 
-func Set(str string, f template.NewNode) qerror.Error {
-	return m.Set(str, f)
+//Set node in trie
+func Set(name []byte, f template.NewNode) qerror.Error {
+	return m.Set(name, f)
 }
 
+//Get node in trie
 func Get(buf []byte) (template.NewNode, qerror.Error) {
 	return m.Get(buf)
 }
 
+//List node name
 func List() [][]byte {
 	return m.list
 }
