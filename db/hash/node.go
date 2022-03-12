@@ -5,18 +5,18 @@ import (
 )
 
 type node struct {
-	key				[]byte
-	value			template.Node
-	code			uint32
-	last, next		*node
+	key        []byte
+	value      template.Node
+	code       uint32
+	last, next *node
 }
 
 func newNode(key []byte, code uint32, value template.Node, last *node) *node {
 	return &node{
-		key: key,
+		key:   key,
 		value: value,
-		code: code,
-		last: last,
+		code:  code,
+		last:  last,
 	}
 }
 
@@ -29,7 +29,7 @@ func (m *node) SetValue(v template.Node) {
 }
 
 func (m *node) Key() []byte {
-	k := make([]byte, len(m.key) )
+	k := make([]byte, len(m.key))
 	copy(k, m.key)
 	return k
 }

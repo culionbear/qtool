@@ -12,20 +12,20 @@ const (
 type VarType int
 
 type Api struct {
-	VarList	[]VarType
+	VarList   []VarType
 	ReturnVar VarType
-	ReadOnly bool
+	ReadOnly  bool
 }
 
 type Response struct {
-	Err qerror.Error
-	Msg []byte
+	Err         qerror.Error
+	Msg         []byte
 	Persistence bool
 }
 
 type Request struct {
 	Value []interface{}
-	Api []byte
+	Api   []byte
 }
 
 type Class interface {

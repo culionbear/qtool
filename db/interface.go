@@ -2,8 +2,8 @@ package db
 
 import (
 	"github.com/culionbear/qtool/db/hash"
-	"github.com/culionbear/qtool/template"
 	"github.com/culionbear/qtool/qerror"
+	"github.com/culionbear/qtool/template"
 )
 
 type Table interface {

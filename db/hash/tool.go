@@ -11,7 +11,7 @@ func compare(a, b []byte) bool {
 func hashCode(buf []byte) uint32 {
 	var sum uint32
 	for _, v := range buf {
-		sum = sum << 5 - sum + uint32(v)
+		sum = sum<<5 - sum + uint32(v)
 	}
-	return sum ^ ( sum >> 16 )
+	return sum ^ (sum >> 16)
 }

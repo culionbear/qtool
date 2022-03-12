@@ -6,7 +6,7 @@ import (
 )
 
 type list struct {
-	head, tail	*node
+	head, tail *node
 }
 
 func newList(key []byte, code uint32, value template.Node) *list {
@@ -29,7 +29,7 @@ func (m *list) set(key []byte, code uint32, value template.Node) qerror.Error {
 	if m.head.code == code && compare(m.head.key, key) {
 		return qerror.New(append(key, []byte(" is exists")...))
 	}
-	for n := m.head.next; n != nil ; n = n.next {
+	for n := m.head.next; n != nil; n = n.next {
 		if n.code == code && compare(n.key, key) {
 			return qerror.New(append(key, []byte(" is exists")...))
 		}
@@ -44,7 +44,7 @@ func (m *list) setX(key []byte, code uint32, value template.Node) int {
 		m.head.value = value
 		return 0
 	}
-	for n := m.head.next; n != nil ; n = n.next {
+	for n := m.head.next; n != nil; n = n.next {
 		if n.code == code && compare(n.key, key) {
 			n.value = value
 			return 0
@@ -60,7 +60,7 @@ func (m *list) update(key []byte, code uint32, value template.Node) qerror.Error
 		m.head.value = value
 		return nil
 	}
-	for n := m.head.next; n != nil ; n = n.next {
+	for n := m.head.next; n != nil; n = n.next {
 		if n.code == code && compare(n.key, key) {
 			n.value = value
 			return nil
@@ -92,7 +92,7 @@ func (m *list) resize(cap uint32) (*list, *list) {
 	var loHead, loTail *node
 	var hiHead, hiTail *node
 	for n := m.head; n != nil; n = n.next {
-		if n.code & cap == 0 {
+		if n.code&cap == 0 {
 			if loTail == nil {
 				loHead = n
 			} else {
@@ -111,10 +111,10 @@ func (m *list) resize(cap uint32) (*list, *list) {
 		}
 	}
 	return &list{
-		head: loHead,
-		tail: loTail,
-	}, &list{
-		head: hiHead,
-		tail: hiTail,
-	}
+			head: loHead,
+			tail: loTail,
+		}, &list{
+			head: hiHead,
+			tail: hiTail,
+		}
 }

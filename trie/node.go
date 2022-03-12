@@ -5,11 +5,11 @@ import (
 )
 
 type node struct {
-	value interface{}
+	value    interface{}
 	children [26]*node
 }
 
-func newNode() *node{
+func newNode() *node {
 	return &node{}
 }
 
@@ -28,7 +28,7 @@ func (n *node) add(str string, i, length int, v interface{}) qerror.Error {
 	if n.children[k] == nil {
 		n.children[k] = newNode()
 	}
-	return n.children[k].add(str, i + 1, length, v)
+	return n.children[k].add(str, i+1, length, v)
 }
 
 func (n *node) get(buf []byte, i, length int) (interface{}, qerror.Error) {
@@ -45,5 +45,5 @@ func (n *node) get(buf []byte, i, length int) (interface{}, qerror.Error) {
 	if n.children[k] == nil {
 		n.children[k] = newNode()
 	}
-	return n.children[k].get(buf, i + 1, length)
+	return n.children[k].get(buf, i+1, length)
 }
