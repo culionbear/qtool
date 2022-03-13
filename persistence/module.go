@@ -6,14 +6,14 @@ import (
 
 //Node struct in binary file
 type Node struct {
-	Key		[]byte
-	Value	hash.Node
+	Key   []byte
+	Value hash.Node
 }
 
 //NewNode return Node point with k/v
 func NewNode(key []byte, value hash.Node) *Node {
 	return &Node{
-		Key: key,
+		Key:   key,
 		Value: value,
 	}
 }
