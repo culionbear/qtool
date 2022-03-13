@@ -1,4 +1,4 @@
-<div align=center><img src="./image/qlite.png"/></div>
+<div align=center><img src="../image/qlite.png"/></div>
 
 # QTOOL
 
@@ -9,25 +9,25 @@
 ![](https://img.shields.io/tokei/lines/github/culionbear/qtool)
 ![](https://img.shields.io/github/v/release/culionbear/qtool?include_prereleases)
 
-Dependency packages for QLite Databse
+QLite数据库底层架构包
 
-English Document | [中文文档](./doc/README_ZH.md)
+中文文档 | [English Document](../README.md)
 
-## Install
+## 安装
 
 ``` shell
-# download package to your project
+# 将包导入至自己的项目
 go get -u github.com/culionbear/qtool@latest
 ```
 
-## Usage
+## 使用
 
-Click
+单击
 [WIKI](https://github.com/culionbear/qtool/wiki)
-for more tutorials
+查看更多操作
 
-## License
+## 许可证
 
-This repository and site are available as open-source under the terms of the
+本存储库和网站是在
 [MIT License](https://opensource.org/licenses/MIT)
-.
+下开放源代码的。
