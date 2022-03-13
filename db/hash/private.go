@@ -60,3 +60,10 @@ func (m *Manager) serialize() {
 		return true
 	})
 }
+
+func (m *Manager) del(n *node) {
+	i := n.code & uint32(m.cap - 1)
+	if m.table[i].delNode(n) {
+		m.table[i] = nil
+	}
+}

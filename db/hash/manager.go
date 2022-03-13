@@ -192,14 +192,16 @@ func (m *Manager) Rename(dst, src []byte) qerror.Error {
 	code := hashCode(dst)
 	i := code & uint32(m.cap-1)
 	if m.table[i] == nil {
-		//TODO:sNode.resize(dst, code)
+		m.del(sNode)
+		sNode.rename(dst, i)
 		m.table[i] = newListWithNode(sNode)
 		return nil
 	}
 	if m.table[i].get(dst) != nil {
 		return qerror.New(append(src, []byte(" is exists")...))
 	}
-	//TODO:sNode.resize(dst, code)
+	m.del(sNode)
+	sNode.rename(dst, i)
 	m.table[i].pushBackNode(sNode)
 	return nil
 }
@@ -213,16 +215,18 @@ func (m *Manager) Cover(dst, src []byte) qerror.Error {
 	code := hashCode(dst)
 	i := code & uint32(m.cap-1)
 	if m.table[i] == nil {
-		//TODO:sNode.resize(dst, code)
+		m.del(sNode)
+		sNode.rename(dst, i)
 		m.table[i] = newListWithNode(sNode)
 		return nil
 	}
 	if dNode := m.table[i].get(dst); dNode != nil {
-		dNode.rename(src, sNode.code)
-		//TODO:sNode.deled()
+		dNode.value = sNode.value
+		m.del(sNode)
 		return nil
 	}
-	//TODO:sNode.resize(dst, code)
+	m.del(sNode)
+	sNode.rename(dst, i)
 	m.table[i].pushBackNode(sNode)
 	return nil
 }

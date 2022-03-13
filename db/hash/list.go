@@ -104,6 +104,19 @@ func (m *list) del(key []byte) (bool, qerror.Error) {
 	return false, nil
 }
 
+func (m *list) delNode(n *node) bool {
+	if m.head == n {
+		return true
+	} else if m.tail == n {
+		m.tail = m.tail.last
+		m.tail.next = nil
+	} else {
+		n.last.next = n.next
+		n.next.last = n.last
+	}
+	return false
+}
+
 func (m *list) pushBackNode(n *node) {
 	n.last, n.next = m.tail, nil
 	m.tail.next = n
