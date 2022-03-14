@@ -4,16 +4,31 @@ import (
 	"github.com/culionbear/qtool/db/hash"
 )
 
-//Node struct in binary file
-type Node struct {
-	Key   []byte
-	Value hash.Node
+//qdbModule struct in binary file
+type qdbModule struct {
+	key		[]byte
+	class	[]byte
+	buf		[]byte
 }
 
-//NewNode return Node point with k/v
-func NewNode(key []byte, value hash.Node) *Node {
-	return &Node{
-		Key:   key,
-		Value: value,
+//newQdbModule return Module point with hash.Node
+func newQdbModule(value hash.Node) *qdbModule {
+	return &qdbModule {
+		key:	value.Key(),
+		class:	value.Value().Type(),
+		buf:	value.Value().Serialize(),
+	}
+}
+
+//AofModule struct in log file
+type AofModule struct {
+	Cmd		uint8
+	Buf		[]byte
+}
+
+func NewAofModule(cmd uint8, buf []byte) *AofModule {
+	return &AofModule{
+		Cmd: cmd,
+		Buf: buf,
 	}
 }
