@@ -15,7 +15,8 @@ type Config struct {
 	Aof			bool		`json:"aof" xml:"aof"`
 	AofPath		string		`json:"aof_path,omitempty" xml:"aof_path,omitempty"`
 	AofTimer	int			`json:"aof_timer,omitempty" xml:"aof_timer,omitempty"`
-	QdbPath		string		`json:"qdb_path" xml:"qdb_path"`
+	Qdb			string		`json:"qdb,omitempty" xml:"qdb,omitempty"`
+	QdbTimer	int			`json:"qdb_timer,omitempty" xml:"qdb_timer,omitempty"`
 }
 
 func NewConfig(path string, c *Config) error {

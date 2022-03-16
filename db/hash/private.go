@@ -53,17 +53,36 @@ func (m *Manager) get(key []byte) *node {
 	return m.table[i].get(key)
 }
 
-func (m *Manager) serialize() {
-	list := make([][]byte, 0)
-	m.Iterators(nil, func(n Node) bool {
-		list = append(list, n.Value().Serialize())
-		return true
-	})
-}
-
 func (m *Manager) del(n *node) {
 	i := n.code & uint32(m.cap - 1)
 	if m.table[i].delNode(n) {
 		m.table[i] = nil
+	}
+}
+
+func (m *Manager) iterators(key []byte, f func(*node) bool) {
+	if m.size == 0 {
+		return
+	}
+	var start, sum int
+	if key != nil {
+		n := m.get(key)
+		start = (int(n.code) & (m.cap - 1)) + 1
+		for k := n; k != nil; k = k.next {
+			sum++
+			if !f(k) {
+				return
+			}
+		}
+	}
+	for i, num := start, sum; i < m.cap && num < m.size; i++ {
+		if m.table[i] == nil {
+			continue
+		}
+		for n := m.table[i].head; n != nil; n, num = n.next, num+1 {
+			if !f(n) {
+				return
+			}
+		}
 	}
 }

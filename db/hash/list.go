@@ -124,7 +124,6 @@ func (m *list) pushBackNode(n *node) {
 }
 
 func (m *list) resize(cap uint32) (*list, *list) {
-	//TODO:跳表实现
 	var loHead, loTail *node
 	var hiHead, hiTail *node
 	for n := m.head; n != nil; n = n.next {

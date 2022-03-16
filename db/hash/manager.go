@@ -3,6 +3,7 @@ package hash
 import (
 	"regexp"
 
+	"github.com/culionbear/qtool/persistence"
 	"github.com/culionbear/qtool/qerror"
 	"github.com/culionbear/qtool/template"
 )
@@ -21,20 +22,32 @@ type Manager struct {
 	cap       int
 	threshold int
 	size      int
+	pManager  *persistence.Manager
 }
 
-func New() *Manager {
-	return &Manager{
+func New(path string) (m *Manager, err error) {
+	m = &Manager {
 		size:      0,
 		threshold: defaultInitialCapacity * defaultLoadFactor,
 		cap:       defaultInitialCapacity,
 		table:     make([]*list, defaultInitialCapacity),
 	}
+	m.pManager, err = persistence.New(path)
+	return
 }
 
-//TODO:有序链表
+//Save 数据库快照
+func (m *Manager) Save() error {
+	list := make([]template.Node, 0)
+	m.iterators(nil, func(n *node) bool {
+		list = append(list, n.value)
+		return true
+	})
+	return m.pManager.QdbSave(list)
+}
+
 //Set 添加kv至map，若key存在则返回error
-func (m *Manager) Set(key []byte, value template.Node) qerror.Error {
+func (m *Manager) Set(key []byte, value template.Node) error {
 	code := hashCode(key)
 	i := code & uint32(m.cap-1)
 	if m.table[i] == nil {
@@ -48,6 +61,7 @@ func (m *Manager) Set(key []byte, value template.Node) qerror.Error {
 	if m.size > m.threshold {
 		m.resize()
 	}
+	m.pManager.AofSave(persistence.CmdSet, []interface{}{key, value})
 	return nil
 }
 
@@ -64,16 +78,22 @@ func (m *Manager) SetX(key []byte, value template.Node) {
 	if m.size > m.threshold {
 		m.resize()
 	}
+	m.pManager.AofSave(persistence.CmdSetX, []interface{}{key, value})
 }
 
 //Update 修改元素，若不存在则返回error
-func (m *Manager) Update(key []byte, value template.Node) qerror.Error {
+func (m *Manager) Update(key []byte, value template.Node) error {
 	code := hashCode(key)
 	i := code & uint32(m.cap-1)
 	if m.table[i] == nil {
 		return qerror.New(append(key, []byte(" is not found")...))
 	}
-	return m.table[i].update(key, code, value)
+	err := m.table[i].update(key, code, value)
+	if err != nil {
+		return err
+	}
+	m.pManager.AofSave(persistence.CmdUpdate, []interface{}{key, value})
+	return nil
 }
 
 //Get 获取元素
@@ -95,7 +115,7 @@ func (m *Manager) Gets(keys ...[]byte) []template.Node {
 }
 
 //Del 删除元素, 若不存在则返回error
-func (m *Manager) Del(key []byte) qerror.Error {
+func (m *Manager) Del(key []byte) error {
 	code := hashCode(key)
 	i := code & uint32(m.cap-1)
 	if m.table[i] == nil {
@@ -108,6 +128,7 @@ func (m *Manager) Del(key []byte) qerror.Error {
 	if flag {
 		m.table[i] = nil
 	}
+	m.pManager.AofSave(persistence.CmdDel, []interface{}{key})
 	m.size--
 	return nil
 }
@@ -115,11 +136,14 @@ func (m *Manager) Del(key []byte) qerror.Error {
 //Dels 删除元素集并返回成功的个数
 func (m *Manager) Dels(keys ...[]byte) int {
 	var sum int
+	list := make([]interface{}, 0)
 	for _, v := range keys {
 		if m.Del(v) == nil {
+			list = append(list, v)
 			sum++
 		}
 	}
+	m.pManager.AofSave(persistence.CmdDels, list)
 	return sum
 }
 
@@ -184,7 +208,7 @@ func (m *Manager) Iterators(key []byte, f func(Node) bool) {
 }
 
 //Rename 重命名，若dst存在或src不存在则返回error
-func (m *Manager) Rename(dst, src []byte) qerror.Error {
+func (m *Manager) Rename(dst, src []byte) error {
 	sNode := m.get(src)
 	if sNode == nil {
 		return qerror.New(append(src, []byte(" is not found")...))
@@ -203,11 +227,12 @@ func (m *Manager) Rename(dst, src []byte) qerror.Error {
 	m.del(sNode)
 	sNode.rename(dst, i)
 	m.table[i].pushBackNode(sNode)
+	m.pManager.AofSave(persistence.CmdDel, []interface{}{dst, src})
 	return nil
 }
 
 //Cover 将src覆盖至dst，若dst不存在则执行Rename， 若src不存在则返回error
-func (m *Manager) Cover(dst, src []byte) qerror.Error {
+func (m *Manager) Cover(dst, src []byte) error {
 	sNode := m.get(src)
 	if sNode == nil {
 		return qerror.New(append(src, []byte(" is not found")...))
@@ -228,6 +253,7 @@ func (m *Manager) Cover(dst, src []byte) qerror.Error {
 	m.del(sNode)
 	sNode.rename(dst, i)
 	m.table[i].pushBackNode(sNode)
+	m.pManager.AofSave(persistence.CmdDel, []interface{}{dst, src})
 	return nil
 }
 
