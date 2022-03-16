@@ -5,16 +5,16 @@ import (
 	"github.com/culionbear/qtool/template"
 )
 
-//qdbModule struct in binary file
-type qdbModule struct {
+//QdbModule struct in binary file
+type QdbModule struct {
 	key		[]byte
 	class	[]byte
 	buf		[]byte
 }
 
-//newQdbModule return Module point with hash.Node
-func newQdbModule(key []byte, value template.Node) *qdbModule {
-	return &qdbModule {
+//NewQdbModule return Module point with hash.Node
+func NewQdbModule(key []byte, value template.Node) *QdbModule {
+	return &QdbModule {
 		key:	key,
 		class:	value.Type(),
 		buf:	value.Serialize(),

@@ -38,9 +38,9 @@ func New(path string) (m *Manager, err error) {
 
 //Save 数据库快照
 func (m *Manager) Save() error {
-	list := make([]template.Node, 0)
+	list := make([]*persistence.QdbModule, 0)
 	m.iterators(nil, func(n *node) bool {
-		list = append(list, n.value)
+		list = append(list, persistence.NewQdbModule(n.key, n.value))
 		return true
 	})
 	return m.pManager.QdbSave(list)

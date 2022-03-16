@@ -2,8 +2,6 @@ package persistence
 
 import (
 	"os"
-
-	"github.com/culionbear/qtool/template"
 )
 
 //Manager persistence
@@ -27,18 +25,17 @@ func (m *Manager) Close() {
 		m.aofCloseCh <- true
 		<- m.closeCh
 	}
-
+	m.qdbCloseCh <- true
+	<- m.closeCh
 }
 
-func (m *Manager) QdbSave(values []template.Node) error {
+//QdbSave save binary data in local
+func (m *Manager) QdbSave(nodes []*QdbModule) error {
 	fp, err := os.OpenFile("./qdb.duplicate", os.O_WRONLY | os.O_TRUNC, 0666)
 	if err != nil {
 		return err
 	}
 	defer fp.Close()
-	for _, v := range values {
-		_ = v
-	}
 	
 	return nil
 }
