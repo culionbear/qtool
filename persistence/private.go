@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"bufio"
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -38,9 +39,8 @@ func (m *Manager) initAof() error {
 			return err
 		}
 	}
-	m.aofCh = make(chan *aofModule, 100000)
+	m.aofCh = make(chan *module, 100000)
 	m.aofCloseCh = make(chan bool)
-	go m.runAof()
 	return nil
 }
 
@@ -98,7 +98,7 @@ func (m *Manager) createFile(path string) error {
 	return err
 }
 
-func (m *Manager) serialize(msg *aofModule) ([]byte, error) {
+func (m *Manager) serialize(msg *module) ([]byte, error) {
 	switch msg.Cmd {
 	case CmdSet:
 		return msg.getSetModule()
@@ -115,6 +115,15 @@ func (m *Manager) serialize(msg *aofModule) ([]byte, error) {
 	case CmdCover:
 		return msg.getCoverModule()
 	default:
-		return nil, qerror.New([]byte("cmd is not found"))
+		return nil, qerror.NewString("cmd is not found")
 	}
+}
+
+func (m *Manager) readAll() ([]byte, error) {
+	fp, err := os.Open(m.info.AofPath)
+	if err != nil {
+		return nil, err
+	}
+	defer fp.Close()
+	return io.ReadAll(fp)
 }

@@ -3,7 +3,7 @@ package persistence
 //Manager persistence
 type Manager struct {
 	info		Config
-	aofCh		chan *aofModule
+	aofCh		chan *module
 	aofCloseCh	chan bool
 	closeCh		chan bool
 }
@@ -22,6 +22,11 @@ func NewWithConfig(c Config) (*Manager, error) {
 	return m, m.initAof()
 }
 
+//Run aof gorountie
+func (m *Manager) Run() {
+	go m.runAof()
+}
+
 //Close persistence Manager
 func (m *Manager) Close() {
 	m.aofCloseCh <- true
@@ -30,5 +35,16 @@ func (m *Manager) Close() {
 
 //Save logs in local
 func (m *Manager) Save(cmd uint8, args []interface{}) {
-	m.aofCh <- newAofModule(cmd, args)
+	m.aofCh <- newModule(cmd, args)
+}
+
+//Fetch local in table
+func (m *Manager) Fetch(f func([]byte, [][]byte) error) error {
+	buf, err := m.readAll()
+	if err != nil {
+		return err
+	}
+	//TODO:恢复数据
+	_ = buf
+	return nil
 }

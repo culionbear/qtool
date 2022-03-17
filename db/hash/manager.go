@@ -33,7 +33,11 @@ func New(c persistence.Config) (m *Manager, err error) {
 		table:     make([]*list, defaultInitialCapacity),
 	}
 	m.pManager, err = persistence.NewWithConfig(c)
-	return
+	if err != nil {
+		return
+	}
+	defer m.pManager.Run()
+	return m, m.pManager.Fetch(m.fetch)
 }
 
 //Set 添加kv至map，若key存在则返回error

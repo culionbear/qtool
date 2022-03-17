@@ -1,5 +1,10 @@
 package qerror
 
+import (
+	"reflect"
+	"unsafe"
+)
+
 //Error qlite system error type
 type Error []byte
 
@@ -16,8 +21,15 @@ func New(buf []byte) Error {
 }
 
 //NewString new error to string
-func NewString(err string) Error {
-	return Error(err)
+func NewString(msg string) (err Error) {
+	/* #nosec G103 */
+	errH := (*reflect.SliceHeader)(unsafe.Pointer(&err))
+	/* #nosec G103 */
+	sh := (*reflect.StringHeader)(unsafe.Pointer(&msg))
+	errH.Data = sh.Data
+	errH.Cap = sh.Len
+	errH.Len = sh.Len
+	return
 }
 
 //Error to error interface
