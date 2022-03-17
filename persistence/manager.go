@@ -14,6 +14,7 @@ func New(path string) (*Manager, error) {
 	return m, m.initConfig(path)
 }
 
+//NewWithConfig to Manager
 func NewWithConfig(c Config) (*Manager, error) {
 	m := &Manager{
 		info: c,
