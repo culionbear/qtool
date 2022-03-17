@@ -5,22 +5,6 @@ import (
 	"github.com/culionbear/qtool/template"
 )
 
-//QdbModule struct in binary file
-type QdbModule struct {
-	key		[]byte
-	class	[]byte
-	buf		[]byte
-}
-
-//NewQdbModule return Module point with hash.Node
-func NewQdbModule(key []byte, value template.Node) *QdbModule {
-	return &QdbModule {
-		key:	key,
-		class:	value.Type(),
-		buf:	value.Serialize(),
-	}
-}
-
 type aofModule struct {
 	Cmd		uint8
 	Values	[]interface{}
@@ -45,7 +29,7 @@ func (m *aofModule) getSetModule() ([]byte, error) {
 	if !ok {
 		return nil, qerror.NewString("value type is not node")
 	}
-	return serializeAofNodeModule(CmdSet, k, n), nil
+	return serializeNodeModule(CmdSet, k, n), nil
 }
 
 func (m *aofModule) getSetXModule() ([]byte, error) {
@@ -60,7 +44,7 @@ func (m *aofModule) getSetXModule() ([]byte, error) {
 	if !ok {
 		return nil, qerror.NewString("value type is not node")
 	}
-	return serializeAofNodeModule(CmdSetX, k, n), nil
+	return serializeNodeModule(CmdSetX, k, n), nil
 }
 
 func (m *aofModule) getUpdateModule() ([]byte, error) {
@@ -75,7 +59,7 @@ func (m *aofModule) getUpdateModule() ([]byte, error) {
 	if !ok {
 		return nil, qerror.NewString("value type is not node")
 	}
-	return serializeAofNodeModule(CmdUpdate, k, n), nil
+	return serializeNodeModule(CmdUpdate, k, n), nil
 }
 
 
@@ -87,7 +71,7 @@ func (m *aofModule) getDelModule() ([]byte, error) {
 	if !ok {
 		return nil, qerror.NewString("key type is not bytes")
 	}
-	return serializeAofBytesModule(CmdDel, k), nil
+	return serializeBytesModule(CmdDel, k), nil
 }
 
 func (m *aofModule) getDelsModule() ([]byte, error) {
@@ -99,7 +83,7 @@ func (m *aofModule) getDelsModule() ([]byte, error) {
 		}
 		list[k] = buf
 	}
-	return serializeAofBytesModule(CmdDel, list...), nil
+	return serializeBytesModule(CmdDel, list...), nil
 }
 
 func (m *aofModule) getRenameModule() ([]byte, error) {
@@ -114,7 +98,7 @@ func (m *aofModule) getRenameModule() ([]byte, error) {
 	if !ok {
 		return nil, qerror.NewString("key type is not bytes")
 	}
-	return serializeAofBytesModule(CmdRename, k1, k2), nil
+	return serializeBytesModule(CmdRename, k1, k2), nil
 }
 
 func (m *aofModule) getCoverModule() ([]byte, error) {
@@ -129,5 +113,5 @@ func (m *aofModule) getCoverModule() ([]byte, error) {
 	if !ok {
 		return nil, qerror.NewString("key type is not bytes")
 	}
-	return serializeAofBytesModule(CmdCover, k1, k2), nil
+	return serializeBytesModule(CmdCover, k1, k2), nil
 }

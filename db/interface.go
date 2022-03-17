@@ -32,8 +32,6 @@ type Table interface {
 	Cover([]byte, []byte) error
 	//Exist key
 	Exist([]byte) bool
-	//Save database
-	Save() error
 }
 
 var Manager Table

@@ -36,16 +36,6 @@ func New(path string) (m *Manager, err error) {
 	return
 }
 
-//Save 数据库快照
-func (m *Manager) Save() error {
-	list := make([]*persistence.QdbModule, 0)
-	m.iterators(nil, func(n *node) bool {
-		list = append(list, persistence.NewQdbModule(n.key, n.value))
-		return true
-	})
-	return m.pManager.QdbSave(list)
-}
-
 //Set 添加kv至map，若key存在则返回error
 func (m *Manager) Set(key []byte, value template.Node) error {
 	code := hashCode(key)
@@ -61,7 +51,7 @@ func (m *Manager) Set(key []byte, value template.Node) error {
 	if m.size > m.threshold {
 		m.resize()
 	}
-	m.pManager.AofSave(persistence.CmdSet, []interface{}{key, value})
+	m.pManager.Save(persistence.CmdSet, []interface{}{key, value})
 	return nil
 }
 
@@ -78,7 +68,7 @@ func (m *Manager) SetX(key []byte, value template.Node) {
 	if m.size > m.threshold {
 		m.resize()
 	}
-	m.pManager.AofSave(persistence.CmdSetX, []interface{}{key, value})
+	m.pManager.Save(persistence.CmdSetX, []interface{}{key, value})
 }
 
 //Update 修改元素，若不存在则返回error
@@ -92,7 +82,7 @@ func (m *Manager) Update(key []byte, value template.Node) error {
 	if err != nil {
 		return err
 	}
-	m.pManager.AofSave(persistence.CmdUpdate, []interface{}{key, value})
+	m.pManager.Save(persistence.CmdUpdate, []interface{}{key, value})
 	return nil
 }
 
@@ -128,7 +118,7 @@ func (m *Manager) Del(key []byte) error {
 	if flag {
 		m.table[i] = nil
 	}
-	m.pManager.AofSave(persistence.CmdDel, []interface{}{key})
+	m.pManager.Save(persistence.CmdDel, []interface{}{key})
 	m.size--
 	return nil
 }
@@ -143,7 +133,7 @@ func (m *Manager) Dels(keys ...[]byte) int {
 			sum++
 		}
 	}
-	m.pManager.AofSave(persistence.CmdDels, list)
+	m.pManager.Save(persistence.CmdDels, list)
 	return sum
 }
 
@@ -227,7 +217,7 @@ func (m *Manager) Rename(dst, src []byte) error {
 	m.del(sNode)
 	sNode.rename(dst, i)
 	m.table[i].pushBackNode(sNode)
-	m.pManager.AofSave(persistence.CmdDel, []interface{}{dst, src})
+	m.pManager.Save(persistence.CmdDel, []interface{}{dst, src})
 	return nil
 }
 
@@ -253,7 +243,7 @@ func (m *Manager) Cover(dst, src []byte) error {
 	m.del(sNode)
 	sNode.rename(dst, i)
 	m.table[i].pushBackNode(sNode)
-	m.pManager.AofSave(persistence.CmdDel, []interface{}{dst, src})
+	m.pManager.Save(persistence.CmdDel, []interface{}{dst, src})
 	return nil
 }
 

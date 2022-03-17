@@ -6,7 +6,7 @@ const (
 	separator	= ';'
 )
 
-func serializeAofNodeModule(cmd uint8, key []byte, node template.Node) []byte {
+func serializeNodeModule(cmd uint8, key []byte, node template.Node) []byte {
 	msg := []byte{cmd}
 	msg = append(msg, pack(key)...)
 	msg = append(msg, pack(node.Type())...)
@@ -14,7 +14,7 @@ func serializeAofNodeModule(cmd uint8, key []byte, node template.Node) []byte {
 	return msg
 }
 
-func serializeAofBytesModule(cmd uint8, buf... []byte) []byte {
+func serializeBytesModule(cmd uint8, buf... []byte) []byte {
 	msg := []byte{cmd}
 	for _, v := range buf {
 		msg = append(msg, pack(v)...)

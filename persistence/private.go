@@ -20,16 +20,10 @@ func (m *Manager) initConfig(path string) error {
 	if err != nil {
 		return err
 	}
-	if err := m.initAof(); err != nil {
-		return err
-	}
-	return m.initQdb()
+	return m.initAof()
 }
 
 func (m *Manager) initAof() error {
-	if !m.info.Aof {
-		return nil
-	}
 	if m.info.AofPath == "" {
 		m.info.AofPath = "/etc/qlite/database.aof"
 	}
@@ -47,26 +41,6 @@ func (m *Manager) initAof() error {
 	m.aofCh = make(chan *aofModule, 100000)
 	m.aofCloseCh = make(chan bool)
 	go m.runAof()
-	return nil
-}
-
-func (m *Manager) initQdb() error {
-	if m.info.Qdb == "" {
-		m.info.Qdb = "/etc/qlite/database.qdb"
-	}
-	if m.info.QdbTimer < 120 {
-		m.info.QdbTimer = 120
-	}
-	if err := m.judgeSuffix(m.info.Qdb, fileQdb); err != nil {
-		return err
-	}
-	if err := m.judgeFile(m.info.Qdb); err != nil {
-		if err = m.createFile(m.info.Qdb); err != nil {
-			return err
-		}
-	}
-	m.qdbCloseCh = make(chan bool)
-	go m.runQdb()
 	return nil
 }
 
@@ -97,23 +71,6 @@ func (m *Manager) runAof() {
 			return
 		case <- timer.C:
 			_ = writer.Flush()
-		}
-	}
-}
-
-func (m *Manager) runQdb() {
-	defer func() {
-		m.closeCh <- true
-	}()
-
-	timer := time.NewTicker(time.Duration(m.info.QdbTimer) * time.Second)
-
-	for {
-		select {
-		case <- m.qdbCloseCh:
-			return
-		case <- timer.C:
-			
 		}
 	}
 }
