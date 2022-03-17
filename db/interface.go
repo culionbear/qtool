@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/culionbear/qtool/db/hash"
+	"github.com/culionbear/qtool/persistence"
 	"github.com/culionbear/qtool/template"
 )
 
@@ -36,7 +37,7 @@ type Table interface {
 
 var Manager Table
 
-func InitDB(path string) (err error) {
-	Manager, err = hash.New(path)
+func InitDB(c persistence.Config) (err error) {
+	Manager, err = hash.New(c)
 	return err
 }

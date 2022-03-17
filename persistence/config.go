@@ -16,6 +16,7 @@ type Config struct {
 	AofTimer	int			`json:"aof_timer,omitempty" xml:"aof_timer,omitempty"`
 }
 
+//NewConfig with file path
 func NewConfig(path string, c *Config) error {
 	var f func([]byte, interface{}) error
 	if strings.LastIndex(path, ".json") != -1 {

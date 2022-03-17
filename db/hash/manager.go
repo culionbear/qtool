@@ -25,14 +25,14 @@ type Manager struct {
 	pManager  *persistence.Manager
 }
 
-func New(path string) (m *Manager, err error) {
+func New(c persistence.Config) (m *Manager, err error) {
 	m = &Manager {
 		size:      0,
 		threshold: defaultInitialCapacity * defaultLoadFactor,
 		cap:       defaultInitialCapacity,
 		table:     make([]*list, defaultInitialCapacity),
 	}
-	m.pManager, err = persistence.New(path)
+	m.pManager, err = persistence.NewWithConfig(c)
 	return
 }
 

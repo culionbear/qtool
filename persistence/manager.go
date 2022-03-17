@@ -14,6 +14,13 @@ func New(path string) (*Manager, error) {
 	return m, m.initConfig(path)
 }
 
+func NewWithConfig(c Config) (*Manager, error) {
+	m := &Manager{
+		info: c,
+	}
+	return m, m.initAof()
+}
+
 //Close persistence Manager
 func (m *Manager) Close() {
 	m.aofCloseCh <- true
