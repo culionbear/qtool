@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	fileAof	= ".aof"
-	fileQdb	= ".qdb"
+	fileAof = ".aof"
+	fileQdb = ".qdb"
 )
 
 //Init persistence Manager with config path
@@ -45,7 +45,7 @@ func (m *Manager) initAof() error {
 }
 
 func (m *Manager) runAof() {
-	fp, err := os.OpenFile(m.info.AofPath, os.O_WRONLY | os.O_APPEND, 0666)
+	fp, err := os.OpenFile(m.info.AofPath, os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		return
 	}
@@ -60,16 +60,16 @@ func (m *Manager) runAof() {
 
 	for {
 		select {
-		case msg := <- m.aofCh:
+		case msg := <-m.aofCh:
 			buf, err := m.serialize(msg)
 			if err != nil {
 				continue
 			}
 			writer.Write(buf)
-		case <- m.aofCloseCh:
+		case <-m.aofCloseCh:
 			_ = writer.Flush()
 			return
-		case <- timer.C:
+		case <-timer.C:
 			_ = writer.Flush()
 		}
 	}
@@ -99,24 +99,10 @@ func (m *Manager) createFile(path string) error {
 }
 
 func (m *Manager) serialize(msg *module) ([]byte, error) {
-	switch msg.Cmd {
-	case CmdSet:
-		return msg.getSetModule()
-	case CmdSetX:
-		return msg.getSetXModule()
-	case CmdUpdate:
-		return msg.getUpdateModule()
-	case CmdDel:
-		return msg.getDelModule()
-	case CmdDels:
-		return msg.getDelsModule()
-	case CmdRename:
-		return msg.getRenameModule()
-	case CmdCover:
-		return msg.getCoverModule()
-	default:
-		return nil, qerror.NewString("cmd is not found")
+	if f := m.cmdTable.Get(msg.Cmd); f != nil {
+		return f(msg)
 	}
+	return nil, qerror.NewString("cmd is not found")
 }
 
 func (m *Manager) readAll() ([]byte, error) {

@@ -5,78 +5,86 @@ import (
 	"github.com/culionbear/qtool/template"
 )
 
+type moduleFunc func(*module) ([]byte, error)
+
+func (m moduleFunc) IsNil() bool {
+	return m == nil
+}
+
 type module struct {
-	Cmd		uint8
-	Values	[]interface{}
+	Cmd    uint8
+	Values []interface{}
 }
 
 func newModule(cmd uint8, values []interface{}) *module {
 	return &module{
-		Cmd:	cmd,
-		Values:	values,
+		Cmd:    cmd,
+		Values: values,
 	}
 }
 
-func (m *module) getSetModule() ([]byte, error) {
-	if len(m.Values) != 2 {
+func (m *Manager) getSetModule(msg *module) ([]byte, error) {
+	if len(msg.Values) != 2 {
 		return nil, qerror.NewString("values length is error")
 	}
-	k, ok := m.Values[0].([]byte)
+	k, ok := msg.Values[0].([]byte)
 	if !ok {
 		return nil, qerror.NewString("key type is not bytes")
 	}
-	n, ok := m.Values[1].(template.Node)
+	n, ok := msg.Values[1].(template.Node)
 	if !ok {
 		return nil, qerror.NewString("value type is not node")
 	}
 	return serializeNodeModule(CmdSet, k, n), nil
 }
 
-func (m *module) getSetXModule() ([]byte, error) {
-	if len(m.Values) != 2 {
+func (m *Manager) getSetXModule(msg *module) ([]byte, error) {
+	if len(msg.Values) != 2 {
 		return nil, qerror.NewString("values length is error")
 	}
-	k, ok := m.Values[0].([]byte)
+	k, ok := msg.Values[0].([]byte)
 	if !ok {
 		return nil, qerror.NewString("key type is not bytes")
 	}
-	n, ok := m.Values[1].(template.Node)
+	n, ok := msg.Values[1].(template.Node)
 	if !ok {
 		return nil, qerror.NewString("value type is not node")
 	}
 	return serializeNodeModule(CmdSetX, k, n), nil
 }
 
-func (m *module) getUpdateModule() ([]byte, error) {
-	if len(m.Values) != 2 {
+func (m *Manager) getUpdateModule(msg *module) ([]byte, error) {
+	if len(msg.Values) != 2 {
 		return nil, qerror.NewString("values length is error")
 	}
-	k, ok := m.Values[0].([]byte)
+	k, ok := msg.Values[0].([]byte)
 	if !ok {
 		return nil, qerror.NewString("key type is not bytes")
 	}
-	n, ok := m.Values[1].(template.Node)
+	n, ok := msg.Values[1].(template.Node)
 	if !ok {
 		return nil, qerror.NewString("value type is not node")
 	}
 	return serializeNodeModule(CmdUpdate, k, n), nil
 }
 
-
-func (m *module) getDelModule() ([]byte, error) {
-	if len(m.Values) != 1 {
+func (m *Manager) getDelModule(msg *module) ([]byte, error) {
+	if len(msg.Values) != 1 {
 		return nil, qerror.NewString("values length is error")
 	}
-	k, ok := m.Values[0].([]byte)
+	k, ok := msg.Values[0].([]byte)
 	if !ok {
 		return nil, qerror.NewString("key type is not bytes")
 	}
 	return serializeBytesModule(CmdDel, k), nil
 }
 
-func (m *module) getDelsModule() ([]byte, error) {
-	list := make([][]byte, len(m.Values))
-	for k, v := range m.Values {
+func (m *Manager) getDelsModule(msg *module) ([]byte, error) {
+	if len(msg.Values) != 0 {
+		return nil, qerror.NewString("values length is error")
+	}
+	list := make([][]byte, len(msg.Values))
+	for k, v := range msg.Values {
 		buf, ok := v.([]byte)
 		if !ok {
 			return nil, qerror.NewString("key type is not bytes")
@@ -86,30 +94,30 @@ func (m *module) getDelsModule() ([]byte, error) {
 	return serializeBytesModule(CmdDel, list...), nil
 }
 
-func (m *module) getRenameModule() ([]byte, error) {
-	if len(m.Values) != 2 {
+func (m *Manager) getRenameModule(msg *module) ([]byte, error) {
+	if len(msg.Values) != 2 {
 		return nil, qerror.NewString("values length is error")
 	}
-	k1, ok := m.Values[0].([]byte)
+	k1, ok := msg.Values[0].([]byte)
 	if !ok {
 		return nil, qerror.NewString("key type is not bytes")
 	}
-	k2, ok := m.Values[1].([]byte)
+	k2, ok := msg.Values[1].([]byte)
 	if !ok {
 		return nil, qerror.NewString("key type is not bytes")
 	}
 	return serializeBytesModule(CmdRename, k1, k2), nil
 }
 
-func (m *module) getCoverModule() ([]byte, error) {
-	if len(m.Values) != 2 {
+func (m *Manager) getCoverModule(msg *module) ([]byte, error) {
+	if len(msg.Values) != 2 {
 		return nil, qerror.NewString("values length is error")
 	}
-	k1, ok := m.Values[0].([]byte)
+	k1, ok := msg.Values[0].([]byte)
 	if !ok {
 		return nil, qerror.NewString("key type is not bytes")
 	}
-	k2, ok := m.Values[1].([]byte)
+	k2, ok := msg.Values[1].([]byte)
 	if !ok {
 		return nil, qerror.NewString("key type is not bytes")
 	}

@@ -8,14 +8,14 @@ import (
 
 //class manager
 type Manager struct {
-	tree *trie.Manager
+	tree *trie.Manager[template.Class]
 	list [][]byte
 }
 
 //New Manager
 func New() *Manager {
 	return &Manager{
-		tree: trie.New(),
+		tree: trie.New[template.Class](),
 		list: make([][]byte, 0),
 	}
 }
@@ -32,11 +32,7 @@ func (m *Manager) Set(name []byte, v template.Class) qerror.Error {
 
 //Get class in trie
 func (m *Manager) Get(name []byte) (template.Class, qerror.Error) {
-	v, err := m.tree.Get(name)
-	if err != nil {
-		return nil, err
-	}
-	return v.(template.Class), nil
+	return m.tree.Get(name)
 }
 
 //List class name

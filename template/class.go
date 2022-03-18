@@ -12,21 +12,22 @@ const (
 type VarType int
 
 type Api struct {
-	VarList		[]VarType
-	ReturnVar	[]VarType
+	VarList   []VarType
+	ReturnVar []VarType
 }
 
 type Response struct {
-	Err         qerror.Error
-	Msg         []byte
+	Err qerror.Error
+	Msg []byte
 }
 
 type Request struct {
-	Values		[]interface{}
-	Cmd			[]byte
+	Values []interface{}
+	Cmd    []byte
 }
 
 type Class interface {
+	Object
 	Do(*Request) *Response
 	ApiList() []Api
 }

@@ -2,20 +2,21 @@ package trie
 
 import (
 	"github.com/culionbear/qtool/qerror"
+	"github.com/culionbear/qtool/template"
 )
 
-type node struct {
-	value    interface{}
-	children [26]*node
+type node[T template.Object] struct {
+	value    T
+	children [26]*node[T]
 }
 
-func newNode() *node {
-	return &node{}
+func newNode[T template.Object]() *node[T] {
+	return &node[T]{}
 }
 
-func (n *node) add(buf []byte, i, length int, v interface{}) qerror.Error {
+func (n *node[T]) add(buf []byte, i, length int, v T) qerror.Error {
 	if length == i {
-		if n.value != nil {
+		if !n.value.IsNil() {
 			return qerror.Error("key is exists")
 		}
 		n.value = v
@@ -26,24 +27,24 @@ func (n *node) add(buf []byte, i, length int, v interface{}) qerror.Error {
 		return qerror.Error("the key must be lowercase")
 	}
 	if n.children[k] == nil {
-		n.children[k] = newNode()
+		n.children[k] = newNode[T]()
 	}
 	return n.children[k].add(buf, i+1, length, v)
 }
 
-func (n *node) get(buf []byte, i, length int) (interface{}, qerror.Error) {
+func (n *node[T]) get(buf []byte, i, length int) (T, qerror.Error) {
 	if length == i {
-		if n.value == nil {
-			return nil, qerror.Error("key is not found")
+		if n.value.IsNil() {
+			return n.value, qerror.Error("key is not found")
 		}
 		return n.value, nil
 	}
 	k := int(buf[i] - 'a')
 	if k < 0 || k >= 26 {
-		return nil, qerror.Error("the key must be lowercase")
+		return n.value, qerror.Error("the key must be lowercase")
 	}
 	if n.children[k] == nil {
-		n.children[k] = newNode()
+		return n.value, qerror.Error("key is not found")
 	}
 	return n.children[k].get(buf, i+1, length)
 }

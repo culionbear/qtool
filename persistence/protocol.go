@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	headLength	= 1 << 3
+	headLength = 1 << 3
 )
 
 func serializeNodeModule(cmd uint8, key []byte, node template.Node) []byte {
@@ -17,7 +17,7 @@ func serializeNodeModule(cmd uint8, key []byte, node template.Node) []byte {
 	return pack(msg)
 }
 
-func serializeBytesModule(cmd uint8, buf... []byte) []byte {
+func serializeBytesModule(cmd uint8, buf ...[]byte) []byte {
 	msg := []byte{cmd}
 	for _, v := range buf {
 		msg = append(msg, pack(v)...)
@@ -28,7 +28,7 @@ func serializeBytesModule(cmd uint8, buf... []byte) []byte {
 func pack(buf []byte) []byte {
 	size := len(buf)
 	msg := newBytes()
-	for i := 0; size != 0 && i < headLength; i ++ {
+	for i := 0; size != 0 && i < headLength; i++ {
 		msg[i] = byte(size % 256)
 		size /= 256
 	}
@@ -41,9 +41,9 @@ func getPackageLength(buf []byte) (int, error) {
 		return 0, qerror.NewString("bytes length is error")
 	}
 	size, num := 0, 1
-	for i := 0; i < headLength; i ++ {
+	for i := 0; i < headLength; i++ {
 		size += int(buf[i]) * num
-		num *= 256 
+		num *= 256
 	}
 	return size, nil
 }

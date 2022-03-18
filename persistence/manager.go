@@ -2,15 +2,25 @@ package persistence
 
 //Manager persistence
 type Manager struct {
-	info		Config
-	aofCh		chan *module
-	aofCloseCh	chan bool
-	closeCh		chan bool
+	info       Config
+	aofCh      chan *module
+	aofCloseCh chan bool
+	closeCh    chan bool
+	cmdTable   *CmdOpt[moduleFunc]
 }
 
 //New Manager
 func New(path string) (*Manager, error) {
 	m := &Manager{}
+	m.cmdTable = &CmdOpt[moduleFunc]{
+		CmdSet:    m.getSetModule,
+		CmdSetX:   m.getSetXModule,
+		CmdUpdate: m.getUpdateModule,
+		CmdDel:    m.getDelModule,
+		CmdDels:   m.getDelsModule,
+		CmdRename: m.getRenameModule,
+		CmdCover:  m.getCoverModule,
+	}
 	return m, m.initConfig(path)
 }
 
@@ -18,6 +28,15 @@ func New(path string) (*Manager, error) {
 func NewWithConfig(c Config) (*Manager, error) {
 	m := &Manager{
 		info: c,
+	}
+	m.cmdTable = &CmdOpt[moduleFunc]{
+		CmdSet:    m.getSetModule,
+		CmdSetX:   m.getSetXModule,
+		CmdUpdate: m.getUpdateModule,
+		CmdDel:    m.getDelModule,
+		CmdDels:   m.getDelsModule,
+		CmdRename: m.getRenameModule,
+		CmdCover:  m.getCoverModule,
 	}
 	return m, m.initAof()
 }
@@ -30,7 +49,7 @@ func (m *Manager) Run() {
 //Close persistence Manager
 func (m *Manager) Close() {
 	m.aofCloseCh <- true
-	<- m.closeCh
+	<-m.closeCh
 }
 
 //Save logs in local
@@ -39,7 +58,7 @@ func (m *Manager) Save(cmd uint8, args []interface{}) {
 }
 
 //Fetch local in table
-func (m *Manager) Fetch(f func([]byte, [][]byte) error) error {
+func (m *Manager) Fetch(f func(uint8, [][]byte) error) error {
 	buf, err := m.readAll()
 	if err != nil {
 		return err

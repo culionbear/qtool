@@ -1,21 +1,24 @@
 package trie
 
-import "github.com/culionbear/qtool/qerror"
+import (
+	"github.com/culionbear/qtool/qerror"
+	"github.com/culionbear/qtool/template"
+)
 
-type Manager struct {
-	head *node
+type Manager[T template.Object] struct {
+	head *node[T]
 }
 
-func New() *Manager {
-	return &Manager{
-		head: newNode(),
+func New[T template.Object]() *Manager[T] {
+	return &Manager[T]{
+		head: newNode[T](),
 	}
 }
 
-func (m *Manager) Set(buf []byte, v interface{}) qerror.Error {
+func (m *Manager[T]) Set(buf []byte, v T) qerror.Error {
 	return m.head.add(buf, 0, len(buf), v)
 }
 
-func (m *Manager) Get(buf []byte) (interface{}, qerror.Error) {
+func (m *Manager[T]) Get(buf []byte) (T, qerror.Error) {
 	return m.head.get(buf, 0, len(buf))
 }

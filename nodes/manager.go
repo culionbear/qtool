@@ -8,14 +8,14 @@ import (
 
 //node manager
 type Manager struct {
-	tree *trie.Manager
+	tree *trie.Manager[template.NewNode]
 	list [][]byte
 }
 
 //New Manager
 func New() *Manager {
 	return &Manager{
-		tree: trie.New(),
+		tree: trie.New[template.NewNode](),
 		list: make([][]byte, 0),
 	}
 }
@@ -32,11 +32,7 @@ func (m *Manager) Set(name []byte, v template.NewNode) qerror.Error {
 
 //Get node in trie
 func (m *Manager) Get(name []byte) (template.NewNode, qerror.Error) {
-	v, err := m.tree.Get(name)
-	if err != nil {
-		return nil, err
-	}
-	return v.(template.NewNode), nil
+	return m.tree.Get(name)
 }
 
 //List node name
