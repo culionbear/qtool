@@ -1,6 +1,9 @@
 package persistence
 
-import "github.com/culionbear/qtool/qerror"
+import (
+	"github.com/culionbear/qtool/logs"
+	"github.com/culionbear/qtool/qerror"
+)
 
 //Manager persistence
 type Manager struct {
@@ -91,12 +94,12 @@ func (m *Manager) Fetch(f func(uint8, [][]byte) error) error {
 			j += pSize
 		}
 		if err = f(cmd, list); err != nil {
-
+			logs.PrintError(err)
 		} else {
 			success++
 		}
 		i = sum
 	}
-	//TODO:日志打印
+	logs.PrintInfo("fetch complete.success:", success, ";all:", all)
 	return nil
 }

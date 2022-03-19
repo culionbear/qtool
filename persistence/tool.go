@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/culionbear/qtool/logs"
 	"github.com/culionbear/qtool/qerror"
 )
 
@@ -47,6 +48,7 @@ func (m *Manager) initAof() error {
 func (m *Manager) runAof() {
 	fp, err := os.OpenFile(m.info.AofPath, os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
+		logs.PrintError(err)
 		return
 	}
 	defer fp.Close()
@@ -63,6 +65,7 @@ func (m *Manager) runAof() {
 		case msg := <-m.aofCh:
 			buf, err := m.serialize(msg)
 			if err != nil {
+				logs.PrintError(err)
 				continue
 			}
 			writer.Write(buf)
