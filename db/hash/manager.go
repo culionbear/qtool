@@ -65,7 +65,7 @@ func (m *Manager) Set(key []byte, value template.Node) qerror.Error {
 	if m.size > m.threshold {
 		m.resize()
 	}
-	m.pManager.Save(persistence.CmdSet, []interface{}{key, value})
+	m.pManager.Save(persistence.CmdSet, []any{key, value})
 	return nil
 }
 
@@ -82,7 +82,7 @@ func (m *Manager) SetX(key []byte, value template.Node) {
 	if m.size > m.threshold {
 		m.resize()
 	}
-	m.pManager.Save(persistence.CmdSetX, []interface{}{key, value})
+	m.pManager.Save(persistence.CmdSetX, []any{key, value})
 }
 
 //Update 修改元素，若不存在则返回error
@@ -96,7 +96,7 @@ func (m *Manager) Update(key []byte, value template.Node) qerror.Error {
 	if err != nil {
 		return err
 	}
-	m.pManager.Save(persistence.CmdUpdate, []interface{}{key, value})
+	m.pManager.Save(persistence.CmdUpdate, []any{key, value})
 	return nil
 }
 
@@ -132,7 +132,7 @@ func (m *Manager) Del(key []byte) qerror.Error {
 	if flag {
 		m.table[i] = nil
 	}
-	m.pManager.Save(persistence.CmdDel, []interface{}{key})
+	m.pManager.Save(persistence.CmdDel, []any{key})
 	m.size--
 	return nil
 }
@@ -140,7 +140,7 @@ func (m *Manager) Del(key []byte) qerror.Error {
 //Dels 删除元素集并返回成功的个数
 func (m *Manager) Dels(keys ...[]byte) int {
 	var sum int
-	list := make([]interface{}, 0)
+	list := make([]any, 0)
 	for _, v := range keys {
 		if m.Del(v) == nil {
 			list = append(list, v)
@@ -231,7 +231,7 @@ func (m *Manager) Rename(dst, src []byte) qerror.Error {
 	m.del(sNode)
 	sNode.rename(dst, i)
 	m.table[i].pushBackNode(sNode)
-	m.pManager.Save(persistence.CmdDel, []interface{}{dst, src})
+	m.pManager.Save(persistence.CmdDel, []any{dst, src})
 	return nil
 }
 
@@ -257,7 +257,7 @@ func (m *Manager) Cover(dst, src []byte) qerror.Error {
 	m.del(sNode)
 	sNode.rename(dst, i)
 	m.table[i].pushBackNode(sNode)
-	m.pManager.Save(persistence.CmdDel, []interface{}{dst, src})
+	m.pManager.Save(persistence.CmdDel, []any{dst, src})
 	return nil
 }
 

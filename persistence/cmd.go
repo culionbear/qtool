@@ -3,8 +3,7 @@ package persistence
 import "github.com/culionbear/qtool/template"
 
 const (
-	_ uint8 = 1 << iota
-	CmdSet
+	CmdSet uint8 = 1 << iota
 	CmdSetX
 	CmdUpdate
 	CmdDel

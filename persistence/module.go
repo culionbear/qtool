@@ -13,10 +13,10 @@ func (m moduleFunc) IsNil() bool {
 
 type module struct {
 	Cmd    uint8
-	Values []interface{}
+	Values []any
 }
 
-func newModule(cmd uint8, values []interface{}) *module {
+func newModule(cmd uint8, values []any) *module {
 	return &module{
 		Cmd:    cmd,
 		Values: values,

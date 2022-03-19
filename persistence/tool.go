@@ -113,3 +113,9 @@ func (m *Manager) readAll() ([]byte, error) {
 	defer fp.Close()
 	return io.ReadAll(fp)
 }
+
+func (m *Manager) copyAll(buf []byte) []byte {
+	b := make([]byte, len(buf))
+	copy(b, buf)
+	return b
+}

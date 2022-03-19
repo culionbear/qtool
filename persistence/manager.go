@@ -1,5 +1,7 @@
 package persistence
 
+import "github.com/culionbear/qtool/qerror"
+
 //Manager persistence
 type Manager struct {
 	info       Config
@@ -53,7 +55,7 @@ func (m *Manager) Close() {
 }
 
 //Save logs in local
-func (m *Manager) Save(cmd uint8, args []interface{}) {
+func (m *Manager) Save(cmd uint8, args []any) {
 	m.aofCh <- newModule(cmd, args)
 }
 
@@ -63,7 +65,38 @@ func (m *Manager) Fetch(f func(uint8, [][]byte) error) error {
 	if err != nil {
 		return err
 	}
-	//TODO:恢复数据
-	_ = buf
+	length, success, all := uint64(len(buf)), 0, 0
+	for i := uint64(0); i < length; all++ {
+		size, err := getPackageLength(buf)
+		if err != nil {
+			return err
+		}
+		i += headLength
+		if i+size > length {
+			return qerror.NewString("bytes size is error")
+		}
+		var cmd uint8 = buf[i]
+		list := make([][]byte, 0)
+		sum := i + size
+		for j := i + 1; j < sum; {
+			pSize, err := getPackageLength(buf[j:sum])
+			if err != nil {
+				return err
+			}
+			j += headLength
+			if j+pSize > sum {
+				return qerror.NewString("package size is error")
+			}
+			list = append(list, m.copyAll(buf[j:j+pSize]))
+			j += pSize
+		}
+		if err = f(cmd, list); err != nil {
+
+		} else {
+			success++
+		}
+		i = sum
+	}
+	//TODO:日志打印
 	return nil
 }

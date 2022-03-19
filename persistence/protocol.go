@@ -35,14 +35,14 @@ func pack(buf []byte) []byte {
 	return append(msg, buf...)
 }
 
-func getPackageLength(buf []byte) (int, error) {
+func getPackageLength(buf []byte) (uint64, error) {
 	length := len(buf)
 	if length < headLength {
 		return 0, qerror.NewString("bytes length is error")
 	}
-	size, num := 0, 1
+	var size, num uint64 = 0, 1
 	for i := 0; i < headLength; i++ {
-		size += int(buf[i]) * num
+		size += uint64(buf[i]) * num
 		num *= 256
 	}
 	return size, nil

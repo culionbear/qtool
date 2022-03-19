@@ -22,7 +22,7 @@ type Response struct {
 }
 
 type Request struct {
-	Values []interface{}
+	Values []any
 	Cmd    []byte
 }
 
