@@ -1,33 +1,18 @@
 package template
 
-import "github.com/culionbear/qtool/qerror"
-
-const (
-	Number = iota
-	String
-	List
-	Bool
+import (
+	"github.com/culionbear/qtool/protocol"
 )
 
-type VarType int
-
+//Api is Class's api list node
+//Need define with user
 type Api struct {
-	VarList   []VarType
-	ReturnVar []VarType
-}
-
-type Response struct {
-	Err qerror.Error
-	Msg []byte
-}
-
-type Request struct {
-	Values []any
-	Cmd    []byte
+	VarList   []protocol.VarType
+	ReturnVar []protocol.VarType
 }
 
 type Class interface {
 	Object
-	Do(*Request) *Response
+	Do([][]byte) []byte
 	ApiList() []Api
 }

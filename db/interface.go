@@ -36,9 +36,9 @@ type Table interface {
 	Exist([]byte) bool
 }
 
-var Manager Table
+var m Table
 
 func InitDB(c persistence.Config) (err error) {
-	Manager, err = hash.New(c)
+	m, err = hash.New(c)
 	return err
 }

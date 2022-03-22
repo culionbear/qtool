@@ -30,9 +30,9 @@ func (m *Manager) Redirect(path string) error {
 }
 
 func (m *Manager) PrintInfo(v ...any) {
-	m.logger.Println(v...)
+	m.logger.Println(append([]any{infoPrefix}, v...)...)
 }
 
 func (m *Manager) PrintError(v ...any) {
-	m.logger.Println(Sprint(Red, v...))
+	m.logger.Println(Sprint(Red, append([]any{errPrefix}, v...)...))
 }
