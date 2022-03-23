@@ -29,8 +29,8 @@ func (m *Manager) initAof() error {
 	if m.info.AofPath == "" {
 		m.info.AofPath = "/etc/qlite/database.aof"
 	}
-	if m.info.AofTimer < 15 {
-		m.info.AofTimer = 15
+	if m.info.AofTimer < 1 {
+		m.info.AofTimer = 1
 	}
 	if err := m.judgeSuffix(m.info.AofPath, fileAof); err != nil {
 		return err

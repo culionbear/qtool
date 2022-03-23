@@ -59,11 +59,11 @@ func (m *Manager) fromInt(n int) []byte {
 func (m *Manager) fromFloat(float float64) []byte {
 	writer := &bytes.Buffer{}
 	writer.WriteByte(floatByte)
-    bits := math.Float64bits(float)
-    buf := []byte{0, 0, 0, 0, 0, 0, 0, 0, separator}
-    binary.LittleEndian.PutUint64(buf, bits)
+	bits := math.Float64bits(float)
+	buf := []byte{0, 0, 0, 0, 0, 0, 0, 0, separator}
+	binary.LittleEndian.PutUint64(buf, bits)
 	writer.Write(buf)
-    return writer.Bytes()
+	return writer.Bytes()
 }
 
 func (m *Manager) fromList(list []any) []byte {
@@ -72,7 +72,7 @@ func (m *Manager) fromList(list []any) []byte {
 	writer.WriteByte(listByte)
 	m.addNumber(writer, size)
 	writer.WriteByte(separator)
-	for i := 0; i < size; i ++ {
+	for i := 0; i < size; i++ {
 		writer.Write(m.pack(list[i]))
 	}
 	return writer.Bytes()

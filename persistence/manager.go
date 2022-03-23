@@ -31,6 +31,9 @@ func New(path string) (*Manager, error) {
 
 //NewWithConfig to Manager
 func NewWithConfig(c Config) (*Manager, error) {
+	if c.AofTimer < 1 {
+		c.AofTimer = 1
+	}
 	m := &Manager{
 		info: c,
 	}
