@@ -20,6 +20,13 @@ func New(buf []byte) Error {
 	return Error(buf)
 }
 
+//New error to copy byte array
+func Copy(src []byte) Error {
+	buf := make(Error, len(src))
+	copy(buf, src)
+	return buf
+}
+
 //NewString new error to string
 func NewString(msg string) (err Error) {
 	/* #nosec G103 */

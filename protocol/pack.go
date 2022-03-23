@@ -8,6 +8,25 @@ import (
 	"github.com/culionbear/qtool/qerror"
 )
 
+func (m *Manager) PackFunc(info []byte) {
+	info[0] |= funcByte
+}
+
+func (m *Manager) PackNet(list [][]byte) []byte {
+	length, size := len(list), 0
+	for i := 0; i < length; i ++ {
+		size += len(list[i])
+	}
+	writer := &bytes.Buffer{}
+	m.addNumber(writer, size)
+	writer.WriteByte(separator)
+	for i := 0; i < length; i ++ {
+		list[i][0] |= chByte
+		writer.Write(list[i])
+	}
+	return writer.Bytes()
+}
+
 func (m *Manager) Pack(module any) []byte {
 	return m.pack(module)
 }
@@ -26,6 +45,8 @@ func (m *Manager) pack(module any) []byte {
 		return m.fromInt(msg)
 	case []any:
 		return m.fromList(msg)
+	case float64:
+		return m.fromFloat(msg)
 	default:
 		return m.fromString(errorByte, m.s2b("unknown type"))
 	}
@@ -43,9 +64,9 @@ func (m *Manager) fromString(t byte, buf []byte) []byte {
 
 func (m *Manager) fromBool(flag bool) []byte {
 	if flag {
-		return []byte{boolByte, 0x01, separator}
+		return []byte{trueByte}
 	}
-	return []byte{boolByte, 0x00, separator}
+	return []byte{falseByte}
 }
 
 func (m *Manager) fromInt(n int) []byte {
@@ -60,7 +81,7 @@ func (m *Manager) fromFloat(float float64) []byte {
 	writer := &bytes.Buffer{}
 	writer.WriteByte(floatByte)
 	bits := math.Float64bits(float)
-	buf := []byte{0, 0, 0, 0, 0, 0, 0, 0, separator}
+	buf := make([]byte, 8, 8)
 	binary.LittleEndian.PutUint64(buf, bits)
 	writer.Write(buf)
 	return writer.Bytes()
@@ -73,6 +94,7 @@ func (m *Manager) fromList(list []any) []byte {
 	m.addNumber(writer, size)
 	writer.WriteByte(separator)
 	for i := 0; i < size; i++ {
+		writer.WriteByte(listByte)
 		writer.Write(m.pack(list[i]))
 	}
 	return writer.Bytes()

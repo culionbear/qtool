@@ -1,13 +1,11 @@
 package initiator
 
-type CmdTree struct {
-
-}
+import "github.com/culionbear/qtool/protocol"
 
 //Module is a package to sand manager
 type Module struct {
 	callBack	chan []byte
-	list		[]CmdTree
+	list		[]protocol.CmdTree
 }
 
 //NewModule with callback channel
@@ -23,7 +21,7 @@ func (m *Module) CallBack() []byte {
 }
 
 //Set CmdTree in Module
-func (m *Module) Set(cmd []CmdTree) {
+func (m *Module) Set(cmd []protocol.CmdTree) {
 	m.list = cmd
 }
 

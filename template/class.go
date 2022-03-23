@@ -1,6 +1,7 @@
 package template
 
 import (
+	"github.com/culionbear/qtool/ds/queue"
 	"github.com/culionbear/qtool/protocol"
 )
 
@@ -13,6 +14,6 @@ type Api struct {
 
 type Class interface {
 	Object
-	Do([][]byte) []byte
+	Do([]byte, *queue.Manager) []byte
 	ApiList() []Api
 }
