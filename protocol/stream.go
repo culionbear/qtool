@@ -29,3 +29,12 @@ func (m *Manager) Read(conn net.Conn, size int, buf []byte) ([]byte, error) {
 	writer.Write(str)
 	return writer.Bytes(), nil
 }
+
+func (m *Manager) Write(buf []byte) []byte {
+	size := len(buf)
+	writer := &bytes.Buffer{}
+	m.addNumber(writer, size)
+	writer.WriteByte(separator)
+	writer.Write(buf)
+	return writer.Bytes()
+}

@@ -14,6 +14,6 @@ type Api struct {
 
 type Class interface {
 	Object
-	Do([]byte, *queue.Manager) []byte
+	Do([]byte, *queue.Manager[any]) []byte
 	ApiList() []Api
 }

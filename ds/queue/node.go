@@ -1,12 +1,16 @@
 package queue
 
-type node[T any] struct {
+type Node[T any] struct {
 	value	T
-	next	*node[T]
+	next	*Node[T]
 }
 
-func newNode[T any](value T) *node[T] {
-	return &node[T]{
+func newNode[T any](value T) *Node[T] {
+	return &Node[T]{
 		value: value,
 	}
+}
+
+func (n *Node[T]) SetValue(v T) {
+	n.value = v
 }

@@ -8,25 +8,6 @@ import (
 	"github.com/culionbear/qtool/qerror"
 )
 
-func (m *Manager) PackFunc(info []byte) {
-	info[0] |= funcByte
-}
-
-func (m *Manager) PackNet(list [][]byte) []byte {
-	length, size := len(list), 0
-	for i := 0; i < length; i ++ {
-		size += len(list[i])
-	}
-	writer := &bytes.Buffer{}
-	m.addNumber(writer, size)
-	writer.WriteByte(separator)
-	for i := 0; i < length; i ++ {
-		list[i][0] |= chByte
-		writer.Write(list[i])
-	}
-	return writer.Bytes()
-}
-
 func (m *Manager) Pack(module any) []byte {
 	return m.pack(module)
 }
@@ -88,14 +69,10 @@ func (m *Manager) fromFloat(float float64) []byte {
 }
 
 func (m *Manager) fromList(list []any) []byte {
-	size := len(list)
 	writer := &bytes.Buffer{}
-	writer.WriteByte(listByte)
-	m.addNumber(writer, size)
-	writer.WriteByte(separator)
-	for i := 0; i < size; i++ {
+	for _, v := range list {
 		writer.WriteByte(listByte)
-		writer.Write(m.pack(list[i]))
+		writer.Write(m.pack(v))
 	}
 	return writer.Bytes()
 }

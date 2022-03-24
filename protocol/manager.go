@@ -10,11 +10,11 @@ const (
 	falseByte
 	floatByte
 	listByte
+	funcByte
 )
 
 const (
-	funcByte byte	= 1 << (iota + 3)
-	chByte
+	chByte byte	= 1 << (iota + 3)
 )
 
 const (

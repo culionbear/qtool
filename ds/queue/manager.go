@@ -1,27 +1,29 @@
 package queue
 
 type Manager[T any] struct {
-	head			*node[T]
-	tail			*node[T]
-	defaultValue	*node[T]
+	head			*Node[T]
+	tail			*Node[T]
+	defaultValue	*Node[T]
 	size	int
 }
 
 func New[T any]() *Manager[T] {
 	return &Manager[T]{
-		defaultValue: &node[T]{},
+		defaultValue: &Node[T]{},
 	}
 }
 
-func (m *Manager[T]) Push(v T) {
+func (m *Manager[T]) Push(v T) *Node[T] {
+	n := newNode(v)
 	if m.head == nil {
-		m.head = newNode(v)
-		m.tail = newNode(v)
+		m.head = n
+		m.tail = n
 	} else {
-		m.tail.next = newNode(v)
+		m.tail.next = n
 		m.tail = m.tail.next
 	}
 	m.size ++
+	return n
 }
 
 func (m *Manager[T]) Pop() T {
