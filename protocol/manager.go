@@ -3,24 +3,25 @@ package protocol
 type VarType byte
 
 const (
-	stringByte byte = iota
+	byteByte byte = iota
+	stringByte
 	errorByte
 	numberByte
 	trueByte
 	falseByte
 	floatByte
-	listByte
-	funcByte
+	methodByte
 )
 
+const separatorByte = 5
+
 const (
-	chByte byte	= 1 << (iota + 3)
+	listByte byte	= 1 << (iota + 8 - separatorByte)
 )
 
 const (
 	separator uint8 = 0xff
 	modValue        = 0xff
-	cmdValue		= 5
 )
 
 //Manager to protocol

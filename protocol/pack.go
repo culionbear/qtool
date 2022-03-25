@@ -14,31 +14,53 @@ func (m *Manager) Pack(module any) []byte {
 
 func (m *Manager) pack(module any) []byte {
 	switch msg := module.(type) {
+	case byte:
+		return m.fromByte(msg)
 	case string:
-		return m.fromString(stringByte, m.s2b(msg))
-	case []byte:
-		return m.fromString(stringByte, msg)
+		return m.fromString(m.s2b(msg))
 	case qerror.Error:
-		return m.fromString(errorByte, msg)
+		return m.fromError(msg)
 	case bool:
 		return m.fromBool(msg)
 	case int:
 		return m.fromInt(msg)
-	case []any:
-		return m.fromList(msg)
 	case float64:
 		return m.fromFloat(msg)
+	case []byte:
+		return m.fromString(msg)
+	case []string:
+		return m.fromStringList(msg)
+	case []qerror.Error:
+		return m.fromErrorList(msg)
+	case []bool:
+		return m.fromBoolList(msg)
+	case []int:
+		return m.fromIntList(msg)
+	case []float64:
+		return m.fromFloatList(msg)
 	default:
-		return m.fromString(errorByte, m.s2b("unknown type"))
+		return m.fromError(qerror.NewString("unknown type"))
 	}
 }
 
-func (m *Manager) fromString(t byte, buf []byte) []byte {
+func (m *Manager) fromByte(buf byte) []byte {
+	return []byte{byteByte, buf}
+}
+
+func (m *Manager) fromString(buf []byte) []byte {
 	writer := &bytes.Buffer{}
-	writer.WriteByte(t)
+	writer.WriteByte(stringByte)
 	size := len(buf)
 	m.addNumber(writer, size)
-	writer.WriteByte(separator)
+	writer.Write(buf)
+	return writer.Bytes()
+}
+
+func (m *Manager) fromError(buf qerror.Error) []byte {
+	writer := &bytes.Buffer{}
+	writer.WriteByte(errorByte)
+	size := len(buf)
+	m.addNumber(writer, size)
 	writer.Write(buf)
 	return writer.Bytes()
 }
@@ -54,7 +76,6 @@ func (m *Manager) fromInt(n int) []byte {
 	writer := &bytes.Buffer{}
 	writer.WriteByte(numberByte)
 	m.addNumber(writer, n)
-	writer.WriteByte(separator)
 	return writer.Bytes()
 }
 
@@ -68,18 +89,74 @@ func (m *Manager) fromFloat(float float64) []byte {
 	return writer.Bytes()
 }
 
-func (m *Manager) fromList(list []any) []byte {
-	writer := &bytes.Buffer{}
-	for _, v := range list {
-		writer.WriteByte(listByte)
-		writer.Write(m.pack(v))
-	}
-	return writer.Bytes()
-}
-
 func (m *Manager) addNumber(writer *bytes.Buffer, num int) {
 	for num != 0 {
 		writer.WriteByte(uint8(num % modValue))
 		num /= modValue
 	}
+	writer.WriteByte(separator)
+}
+
+func (m *Manager) fromStringList(list []string) []byte {
+	writer := &bytes.Buffer{}
+	writer.WriteByte(listByte | stringByte)
+	size := len(list)
+	m.addNumber(writer, size)
+	for i := 0; i < size; i ++ {
+		m.addNumber(writer, len(list[i]))
+		writer.Write(m.s2b(list[i]))
+	}
+	return writer.Bytes()
+}
+
+func (m *Manager) fromErrorList(list []qerror.Error) []byte {
+	writer := &bytes.Buffer{}
+	writer.WriteByte(listByte | errorByte)
+	size := len(list)
+	m.addNumber(writer, size)
+	for i := 0; i < size; i ++ {
+		m.addNumber(writer, len(list[i]))
+		writer.Write(list[i])
+	}
+	return writer.Bytes()
+}
+
+func (m *Manager) fromBoolList(list []bool) []byte {
+	writer := &bytes.Buffer{}
+	writer.WriteByte(listByte | trueByte)
+	size := len(list)
+	m.addNumber(writer, size)
+	for i := 0; i < size; i ++ {
+		if list[i] {
+			writer.WriteByte(trueByte)
+		} else {
+			writer.WriteByte(falseByte)
+		}
+	}
+	return writer.Bytes()
+}
+
+func (m *Manager) fromIntList(list []int) []byte {
+	writer := &bytes.Buffer{}
+	writer.WriteByte(listByte | numberByte)
+	size := len(list)
+	m.addNumber(writer, size)
+	for i := 0; i < size; i ++ {
+		m.addNumber(writer, list[i])
+	}
+	return writer.Bytes()
+}
+
+func (m *Manager) fromFloatList(list []float64) []byte {
+	writer := &bytes.Buffer{}
+	writer.WriteByte(listByte | floatByte)
+	size := len(list)
+	m.addNumber(writer, size)
+	for i := 0; i < size; i ++ {
+		bits := math.Float64bits(list[i])
+		buf := make([]byte, 8, 8)
+		binary.LittleEndian.PutUint64(buf, bits)
+		writer.Write(buf)
+	}
+	return writer.Bytes()
 }

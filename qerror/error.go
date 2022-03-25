@@ -39,6 +39,11 @@ func NewString(msg string) (err Error) {
 	return
 }
 
+//CopyError to Error
+func CopyError(err error) Error {
+	return NewString(err.Error())
+}
+
 //Error to error interface
 func (e Error) Error() string {
 	return string(e)

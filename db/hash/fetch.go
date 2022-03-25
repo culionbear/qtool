@@ -26,7 +26,11 @@ func (m *Manager) fetchSet(info [][]byte) error {
 	if err != nil {
 		return err
 	}
-	n, err := f(info[2])
+	n, err := f(nil)
+	if err != nil {
+		return err
+	}
+	err = n.Deseriallize(info[2])
 	if err != nil {
 		return err
 	}
@@ -41,7 +45,11 @@ func (m *Manager) fetchSetX(info [][]byte) error {
 	if err != nil {
 		return err
 	}
-	n, err := f(info[2])
+	n, err := f(nil)
+	if err != nil {
+		return err
+	}
+	err = n.Deseriallize(info[2])
 	if err != nil {
 		return err
 	}
@@ -57,7 +65,11 @@ func (m *Manager) fetchUpdate(info [][]byte) error {
 	if err != nil {
 		return err
 	}
-	n, err := f(info[2])
+	n, err := f(nil)
+	if err != nil {
+		return err
+	}
+	err = n.Deseriallize(info[2])
 	if err != nil {
 		return err
 	}

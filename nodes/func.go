@@ -1,6 +1,7 @@
 package nodes
 
 import (
+	"github.com/culionbear/qtool/qerror"
 	"github.com/culionbear/qtool/template"
 )
 
@@ -11,12 +12,12 @@ func init() {
 }
 
 //Set node in trie
-func Set(name []byte, f template.NewNode) error {
+func Set(name []byte, f template.NewNode) qerror.Error {
 	return m.Set(name, f)
 }
 
 //Get node in trie
-func Get(buf []byte) (template.NewNode, error) {
+func Get(buf []byte) (template.NewNode, qerror.Error) {
 	return m.Get(buf)
 }
 

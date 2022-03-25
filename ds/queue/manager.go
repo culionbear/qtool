@@ -37,6 +37,19 @@ func (m *Manager[T]) Pop() T {
 	return m.head.value
 }
 
+func (m *Manager[T]) AutoIncrement() *Node[T] {
+	n := &Node[T]{}
+	if m.head == nil {
+		m.head = n
+		m.tail = n
+	} else {
+		m.tail.next = n
+		m.tail = m.tail.next
+	}
+	m.size ++
+	return n
+}
+
 func (m *Manager[T]) Size() int {
 	return m.size
 }
