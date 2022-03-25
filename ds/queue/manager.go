@@ -1,10 +1,10 @@
 package queue
 
 type Manager[T any] struct {
-	head			*Node[T]
-	tail			*Node[T]
-	defaultValue	*Node[T]
-	size	int
+	head         *Node[T]
+	tail         *Node[T]
+	defaultValue *Node[T]
+	size         int
 }
 
 func New[T any]() *Manager[T] {
@@ -22,7 +22,7 @@ func (m *Manager[T]) Push(v T) *Node[T] {
 		m.tail.next = n
 		m.tail = m.tail.next
 	}
-	m.size ++
+	m.size++
 	return n
 }
 
@@ -32,7 +32,7 @@ func (m *Manager[T]) Pop() T {
 	}
 	defer func() {
 		m.head = m.head.next
-		m.size --
+		m.size--
 	}()
 	return m.head.value
 }
@@ -46,7 +46,7 @@ func (m *Manager[T]) AutoIncrement() *Node[T] {
 		m.tail.next = n
 		m.tail = m.tail.next
 	}
-	m.size ++
+	m.size++
 	return n
 }
 

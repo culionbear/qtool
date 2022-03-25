@@ -17,7 +17,7 @@ func (m *Manager) UnpackNet(buf []byte) (*queue.Manager[*CmdTree], qerror.Error)
 		if i > length {
 			return nil, qerror.NewString("package length is error")
 		}
-		cmd, err := m.unpackNet(sum, buf[step: step + sum])
+		cmd, err := m.unpackNet(sum, buf[step:step+sum])
 		if err != nil {
 			return nil, err
 		}
@@ -31,7 +31,7 @@ func (m *Manager) unpackNet(length int, buf []byte) (*CmdTree, qerror.Error) {
 	var err qerror.Error
 	for i := 0; i < length; {
 		if buf[i] == methodByte {
-			sum, step, err := m.readSize(i + 1, length, buf)
+			sum, step, err := m.readSize(i+1, length, buf)
 			if err != nil {
 				return nil, err
 			}
@@ -39,7 +39,7 @@ func (m *Manager) unpackNet(length int, buf []byte) (*CmdTree, qerror.Error) {
 			if i > length {
 				return nil, qerror.NewString("package length is error")
 			}
-			cCmd, err := m.unpackNet(sum, buf[step: step + sum])
+			cCmd, err := m.unpackNet(sum, buf[step:step+sum])
 			if err != nil {
 				return nil, err
 			}

@@ -1,9 +1,9 @@
 package classes
 
 import (
+	"github.com/culionbear/qtool/ds/trie"
 	"github.com/culionbear/qtool/qerror"
 	"github.com/culionbear/qtool/template"
-	"github.com/culionbear/qtool/ds/trie"
 )
 
 //class manager

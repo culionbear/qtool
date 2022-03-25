@@ -5,11 +5,11 @@ import "github.com/culionbear/qtool/ds/queue"
 type CmdFunc func(*queue.Manager[any]) any
 
 type CmdTree struct {
-	brother				*CmdTree
-	child				*CmdTree
-	childBrotherTail	*CmdTree
-	cmd					*queue.Manager[any]
-	point				*queue.Node[any]
+	brother          *CmdTree
+	child            *CmdTree
+	childBrotherTail *CmdTree
+	cmd              *queue.Manager[any]
+	point            *queue.Node[any]
 }
 
 func NewCmdTree(cmd *queue.Manager[any]) *CmdTree {

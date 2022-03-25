@@ -1,8 +1,8 @@
 package queue
 
 type Node[T any] struct {
-	value	T
-	next	*Node[T]
+	value T
+	next  *Node[T]
 }
 
 func newNode[T any](value T) *Node[T] {

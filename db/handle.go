@@ -27,7 +27,7 @@ func Get(key []byte) template.Node {
 }
 
 //Gets value list in table with name list
-func Gets(keys... []byte) []template.Node {
+func Gets(keys ...[]byte) []template.Node {
 	return m.Gets(keys...)
 }
 
@@ -37,7 +37,7 @@ func Del(key []byte) qerror.Error {
 }
 
 //Dels node int table with key list
-func Dels(keys... []byte) int {
+func Dels(keys ...[]byte) int {
 	return m.Dels(keys...)
 }
 

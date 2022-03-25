@@ -102,7 +102,7 @@ func (m *Manager) fromStringList(list []string) []byte {
 	writer.WriteByte(listByte | stringByte)
 	size := len(list)
 	m.addNumber(writer, size)
-	for i := 0; i < size; i ++ {
+	for i := 0; i < size; i++ {
 		m.addNumber(writer, len(list[i]))
 		writer.Write(m.s2b(list[i]))
 	}
@@ -114,7 +114,7 @@ func (m *Manager) fromErrorList(list []qerror.Error) []byte {
 	writer.WriteByte(listByte | errorByte)
 	size := len(list)
 	m.addNumber(writer, size)
-	for i := 0; i < size; i ++ {
+	for i := 0; i < size; i++ {
 		m.addNumber(writer, len(list[i]))
 		writer.Write(list[i])
 	}
@@ -126,7 +126,7 @@ func (m *Manager) fromBoolList(list []bool) []byte {
 	writer.WriteByte(listByte | trueByte)
 	size := len(list)
 	m.addNumber(writer, size)
-	for i := 0; i < size; i ++ {
+	for i := 0; i < size; i++ {
 		if list[i] {
 			writer.WriteByte(trueByte)
 		} else {
@@ -141,7 +141,7 @@ func (m *Manager) fromIntList(list []int) []byte {
 	writer.WriteByte(listByte | numberByte)
 	size := len(list)
 	m.addNumber(writer, size)
-	for i := 0; i < size; i ++ {
+	for i := 0; i < size; i++ {
 		m.addNumber(writer, list[i])
 	}
 	return writer.Bytes()
@@ -152,7 +152,7 @@ func (m *Manager) fromFloatList(list []float64) []byte {
 	writer.WriteByte(listByte | floatByte)
 	size := len(list)
 	m.addNumber(writer, size)
-	for i := 0; i < size; i ++ {
+	for i := 0; i < size; i++ {
 		bits := math.Float64bits(list[i])
 		buf := make([]byte, 8, 8)
 		binary.LittleEndian.PutUint64(buf, bits)

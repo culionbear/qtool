@@ -17,7 +17,7 @@ func (m *Manager) PackNet(list [][]byte) []byte {
 		size += len(v)
 	}
 	writer := &bytes.Buffer{}
-	for _, v := range list { 
+	for _, v := range list {
 		writer.Write(v)
 	}
 	return writer.Bytes()

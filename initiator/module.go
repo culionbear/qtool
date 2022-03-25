@@ -7,12 +7,12 @@ import (
 
 //Module is a package to sand manager
 type Module struct {
-	callBack	chan []byte
-	list		*queue.Manager[*protocol.CmdTree]
+	callBack chan []byte
+	list     *queue.Manager[*protocol.CmdTree]
 }
 
 //NewModule with callback channel
-func NewModule(ch chan[]byte) *Module {
+func NewModule(ch chan []byte) *Module {
 	return &Module{
 		callBack: ch,
 	}
@@ -20,7 +20,7 @@ func NewModule(ch chan[]byte) *Module {
 
 //CallBack return a byte array when option is ending
 func (m *Module) CallBack() []byte {
-	return <- m.callBack
+	return <-m.callBack
 }
 
 //Set CmdTree in Module

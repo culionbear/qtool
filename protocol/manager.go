@@ -16,7 +16,7 @@ const (
 const separatorByte = 5
 
 const (
-	listByte byte	= 1 << (iota + 8 - separatorByte)
+	listByte byte = 1 << (iota + 8 - separatorByte)
 )
 
 const (
@@ -26,8 +26,8 @@ const (
 
 //Manager to protocol
 type Manager struct {
-	size	int
-	mod		int
+	size int
+	mod  int
 }
 
 //New Manager

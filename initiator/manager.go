@@ -10,24 +10,24 @@ import (
 )
 
 type manager struct {
-	ch		chan *Module
-	chClose	chan bool
-	chWait	chan bool
-	handler	*protocol.Manager
+	ch      chan *Module
+	chClose chan bool
+	chWait  chan bool
+	handler *protocol.Manager
 }
 
 func newManager() *manager {
 	return &manager{
-		ch: make(chan *Module, 100000),
+		ch:      make(chan *Module, 100000),
 		chClose: make(chan bool),
-		chWait: make(chan bool),
+		chWait:  make(chan bool),
 		handler: protocol.New(),
 	}
 }
 
 func (m *manager) close() {
 	m.chClose <- true
-	<- m.chWait
+	<-m.chWait
 }
 
 func (m *manager) run() {
@@ -36,7 +36,7 @@ func (m *manager) run() {
 	}()
 	for {
 		select {
-		case ctx := <- m.ch:
+		case ctx := <-m.ch:
 			writer := &bytes.Buffer{}
 			for ctx.list.Size() != 0 {
 				writer.Write(
@@ -44,7 +44,7 @@ func (m *manager) run() {
 				)
 			}
 			ctx.Slot(m.handler.Write(writer.Bytes()))
-		case <- m.chClose:
+		case <-m.chClose:
 			return
 		}
 	}
