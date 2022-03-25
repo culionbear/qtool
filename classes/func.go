@@ -21,6 +21,10 @@ func Get(name []byte) (template.Class, qerror.Error) {
 	return m.Get(name)
 }
 
+func Exists(buf []byte) bool {
+	return m.Exists(buf)
+}
+
 //List class name
 func List() [][]byte {
 	return m.list

@@ -21,6 +21,10 @@ func Get(buf []byte) (template.NewNode, qerror.Error) {
 	return m.Get(buf)
 }
 
+func Exists(buf []byte) bool {
+	return m.Exists(buf)
+}
+
 //List node name
 func List() [][]byte {
 	return m.list

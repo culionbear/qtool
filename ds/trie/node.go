@@ -48,3 +48,17 @@ func (n *node[T]) get(buf []byte, i, length int) (T, qerror.Error) {
 	}
 	return n.children[k].get(buf, i+1, length)
 }
+
+func (n *node[T]) exists(buf []byte, i, length int) bool {
+	if length == i {
+		return !n.value.IsNil()
+	}
+	k := int(buf[i] - 'a')
+	if k < 0 || k >= 26 {
+		return false
+	}
+	if n.children[k] == nil {
+		return false
+	}
+	return n.children[k].exists(buf, i+1, length)
+}

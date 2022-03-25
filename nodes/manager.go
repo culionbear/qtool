@@ -35,6 +35,10 @@ func (m *Manager) Get(name []byte) (template.NewNode, qerror.Error) {
 	return m.tree.Get(name)
 }
 
+func (m *Manager) Exists(name []byte) bool {
+	return m.tree.Exists(name)
+}
+
 //List node name
 func (m *Manager) List() [][]byte {
 	list := make([][]byte, len(m.list))
