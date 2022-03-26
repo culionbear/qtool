@@ -8,6 +8,7 @@
 ![](https://img.shields.io/github/last-commit/culionbear/qtool)
 ![](https://img.shields.io/tokei/lines/github/culionbear/qtool)
 ![](https://img.shields.io/github/v/release/culionbear/qtool?include_prereleases)
+![](https://img.shields.io/github/stars/culionbear/qtool?style=social)
 
 Dependency packages for QLite Databse
 

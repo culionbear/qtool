@@ -21,6 +21,10 @@ func (m *Manager) PackSize(buf []byte) (int, int, bool) {
 func (m *Manager) Read(conn net.Conn, size int, buf []byte) ([]byte, error) {
 	writer := bytes.NewBuffer(buf)
 	size = size - len(buf)
+	if size <= 0 {
+		writer.Write(buf[:size])
+		return writer.Bytes(), nil
+	}
 	str := make([]byte, size)
 	_, err := io.ReadAtLeast(conn, str, size)
 	if err != nil {
