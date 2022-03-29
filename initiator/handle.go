@@ -1,16 +1,16 @@
 package initiator
 
-var m *manager
+var m *Manager
 
-func init() {
-	m = newManager()
-	go m.run()
-}
+// func init() {
+// 	m = NewManager()
+// 	go m.Run()
+// }
 
 func Close() {
-	m.close()
+	m.Close()
 }
 
 func Set(msg *Module) {
-	m.set(msg)
+	m.Set(msg)
 }

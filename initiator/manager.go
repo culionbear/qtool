@@ -9,15 +9,15 @@ import (
 	"github.com/culionbear/qtool/qerror"
 )
 
-type manager struct {
+type Manager struct {
 	ch      chan *Module
 	chClose chan bool
 	chWait  chan bool
 	handler *protocol.Manager
 }
 
-func newManager() *manager {
-	return &manager{
+func NewManager() *Manager {
+	return &Manager{
 		ch:      make(chan *Module, 100000),
 		chClose: make(chan bool),
 		chWait:  make(chan bool),
@@ -25,12 +25,12 @@ func newManager() *manager {
 	}
 }
 
-func (m *manager) close() {
+func (m *Manager) Close() {
 	m.chClose <- true
 	<-m.chWait
 }
 
-func (m *manager) run() {
+func (m *Manager) Run() {
 	defer func() {
 		m.chWait <- true
 	}()
@@ -40,7 +40,7 @@ func (m *manager) run() {
 			writer := &bytes.Buffer{}
 			for ctx.list.Size() != 0 {
 				writer.Write(
-					m.execute(ctx.list.Pop()),
+					m.Execute(ctx.list.Pop()),
 				)
 			}
 			ctx.Slot(m.handler.Write(writer.Bytes()))
@@ -50,16 +50,16 @@ func (m *manager) run() {
 	}
 }
 
-func (m *manager) execute(msg *protocol.CmdTree) []byte {
-	response := msg.Do(m.do)
+func (m *Manager) Execute(msg *protocol.CmdTree) []byte {
+	response := msg.Do(m.Do)
 	return m.handler.Pack(response)
 }
 
-func (m *manager) set(msg *Module) {
+func (m *Manager) Set(msg *Module) {
 	m.ch <- msg
 }
 
-func (m *manager) do(cmd *queue.Manager[any]) any {
+func (m *Manager) Do(cmd *queue.Manager[any]) any {
 	if cmd.Size() < 2 {
 		return qerror.NewString("cmd length is error")
 	}
