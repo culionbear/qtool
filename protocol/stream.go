@@ -9,8 +9,8 @@ import (
 func (m *Manager) PackSize(buf []byte) (int, int, bool) {
 	for k, v := range buf {
 		if v == separator {
-			m.init()
-			return m.size, k, true
+			defer m.init()
+			return m.size, k + 1, true
 		}
 		m.size += m.mod * int(v)
 		m.mod *= modValue
