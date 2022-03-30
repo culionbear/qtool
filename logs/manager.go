@@ -38,9 +38,9 @@ func (m *Manager) PrintError(v ...any) {
 	m.logger.Println(Sprint(Red, append([]any{m.runFuncName(), errPrefix}, v...)...))
 }
 
-func (m *Manager) runFuncName()string{
-	pc := make([]uintptr,2)
-	runtime.Callers(2,pc)
+func (m *Manager) runFuncName() string {
+	pc := make([]uintptr, 2)
+	runtime.Callers(2, pc)
 	f := runtime.FuncForPC(pc[1])
 	return f.Name()
 }

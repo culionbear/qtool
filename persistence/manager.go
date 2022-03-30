@@ -11,6 +11,7 @@ type Manager struct {
 	aofCh      chan *module
 	aofCloseCh chan bool
 	closeCh    chan bool
+	isRun      bool
 	cmdTable   *CmdOpt[moduleFunc]
 }
 
@@ -51,6 +52,7 @@ func NewWithConfig(c Config) (*Manager, error) {
 
 //Run aof gorountie
 func (m *Manager) Run() {
+	m.isRun = true
 	go m.runAof()
 }
 
@@ -62,7 +64,9 @@ func (m *Manager) Close() {
 
 //Save logs in local
 func (m *Manager) Save(cmd uint8, args []any) {
-	m.aofCh <- newModule(cmd, args)
+	if m.isRun {
+		m.aofCh <- newModule(cmd, args)
+	}
 }
 
 //Fetch local in table

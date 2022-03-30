@@ -7,7 +7,7 @@ package qerror
 
 //Error qlite system error type
 type Error struct {
-	msg	[]byte
+	msg []byte
 }
 
 //New error

@@ -7,7 +7,7 @@ import (
 
 type node[T template.Object] struct {
 	value    T
-	flag	 bool
+	flag     bool
 	children [26]*node[T]
 }
 

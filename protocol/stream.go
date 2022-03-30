@@ -19,8 +19,8 @@ func (m *Manager) PackSize(buf []byte) (int, int, bool) {
 }
 
 func (m *Manager) Read(conn net.Conn, size int, buf []byte) ([]byte, error) {
-	if size - len(buf) <= 0 {
-		return buf[: size], nil
+	if size-len(buf) <= 0 {
+		return buf[:size], nil
 	}
 	size = size - len(buf)
 	writer := bytes.NewBuffer(buf)
