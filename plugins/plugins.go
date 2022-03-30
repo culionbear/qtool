@@ -43,7 +43,7 @@ func addClass(plug *plugin.Plugin) error {
 }
 
 func addNode(plug *plugin.Plugin) error {
-	node, err := plug.Lookup("ClassTable")
+	node, err := plug.Lookup("NodeTable")
 	if err != nil {
 		return err
 	}
