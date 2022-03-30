@@ -34,9 +34,8 @@ func (m *Manager) Read(conn net.Conn, size int, buf []byte) ([]byte, error) {
 }
 
 func (m *Manager) Write(buf []byte) []byte {
-	size := len(buf)
 	writer := &bytes.Buffer{}
-	m.addNumber(writer, size)
+	m.addNumber(writer, len(buf))
 	writer.Write(buf)
 	return writer.Bytes()
 }
