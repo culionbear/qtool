@@ -73,7 +73,7 @@ func (m *Manager) Fetch(f func(uint8, [][]byte) error) error {
 	}
 	length, success, all := uint64(len(buf)), 0, 0
 	for i := uint64(0); i < length; all++ {
-		size, err := getPackageLength(buf)
+		size, err := getPackageLength(buf[i:])
 		if err != nil {
 			return err
 		}
@@ -96,7 +96,7 @@ func (m *Manager) Fetch(f func(uint8, [][]byte) error) error {
 			list = append(list, m.copyAll(buf[j:j+pSize]))
 			j += pSize
 		}
-		if err = f(cmd, list); err != nil {
+		if err = f(cmd, list); err.(*qerror.Error) != nil {
 			logs.PrintError(err)
 		} else {
 			success++
