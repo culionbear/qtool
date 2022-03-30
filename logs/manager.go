@@ -3,6 +3,7 @@ package logs
 import (
 	"log"
 	"os"
+	"runtime"
 )
 
 const (
@@ -30,9 +31,16 @@ func (m *Manager) Redirect(path string) error {
 }
 
 func (m *Manager) PrintInfo(v ...any) {
-	m.logger.Println(append([]any{infoPrefix}, v...)...)
+	m.logger.Println(append([]any{m.runFuncName(), infoPrefix}, v...)...)
 }
 
 func (m *Manager) PrintError(v ...any) {
-	m.logger.Println(Sprint(Red, append([]any{errPrefix}, v...)...))
+	m.logger.Println(Sprint(Red, append([]any{m.runFuncName(), errPrefix}, v...)...))
+}
+
+func (m *Manager) runFuncName()string{
+	pc := make([]uintptr,2)
+	runtime.Callers(2,pc)
+	f := runtime.FuncForPC(pc[1])
+	return f.Name()
 }

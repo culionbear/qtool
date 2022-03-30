@@ -19,7 +19,7 @@ func Sprint(color int, v ...any) string {
 		if i != 0 {
 			str += " "
 		}
-		str += "%s"
+		str += "%v"
 	}
 	str = "\x1b[%dm" + str + " \x1b[0m"
 	return fmt.Sprintf(str, append([]any{color}, v...)...)
