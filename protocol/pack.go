@@ -13,6 +13,9 @@ func (m *Manager) Pack(module any) []byte {
 }
 
 func (m *Manager) pack(module any) []byte {
+	if module == nil {
+		return m.fromBool(true)
+	}
 	switch msg := module.(type) {
 	case byte:
 		return m.fromByte(msg)
