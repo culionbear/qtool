@@ -8,8 +8,8 @@ import (
 	"github.com/culionbear/qtool/qerror"
 )
 
-func (m *Manager) Unpack(buf []byte) (*queue.Manager[any], qerror.Error) {
-	var err qerror.Error
+func (m *Manager) Unpack(buf []byte) (*queue.Manager[any], *qerror.Error) {
+	var err *qerror.Error
 	q, size := queue.New[any](), len(buf)
 	for i := 0; i < size; {
 		i, err = m.unpack(q, i, size, buf)
@@ -20,7 +20,7 @@ func (m *Manager) Unpack(buf []byte) (*queue.Manager[any], qerror.Error) {
 	return q, nil
 }
 
-func (m *Manager) readSize(i, size int, buf []byte) (int, int, qerror.Error) {
+func (m *Manager) readSize(i, size int, buf []byte) (int, int, *qerror.Error) {
 	sum, mod := 0, 1
 	for j := i; j < size; j++ {
 		if buf[j] == separator {
@@ -38,7 +38,7 @@ func (m *Manager) copyBuf(buf []byte) []byte {
 	return dst
 }
 
-func (m *Manager) unpack(q *queue.Manager[any], i, size int, buf []byte) (int, qerror.Error) {
+func (m *Manager) unpack(q *queue.Manager[any], i, size int, buf []byte) (int, *qerror.Error) {
 	switch buf[i] {
 	case trueByte:
 		q.Push(true)
@@ -97,7 +97,7 @@ func (m *Manager) unpack(q *queue.Manager[any], i, size int, buf []byte) (int, q
 	}
 }
 
-func (m *Manager) unpackList(q *queue.Manager[any], i, size int, buf []byte) (int, qerror.Error) {
+func (m *Manager) unpackList(q *queue.Manager[any], i, size int, buf []byte) (int, *qerror.Error) {
 	sum, j, err := m.readSize(i+1, size, buf)
 	if err != nil {
 		return 0, err
@@ -119,7 +119,7 @@ func (m *Manager) unpackList(q *queue.Manager[any], i, size int, buf []byte) (in
 		q.Push(list)
 		return j, nil
 	case errorByte:
-		list := make([]qerror.Error, sum, sum)
+		list := make([]*qerror.Error, sum, sum)
 		for k := 0; k < sum; k++ {
 			lSize, next, err := m.readSize(j, size, buf)
 			if err != nil {

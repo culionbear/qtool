@@ -21,7 +21,7 @@ func New() *Manager {
 }
 
 //Set node in trie
-func (m *Manager) Set(name []byte, v template.NewNode) qerror.Error {
+func (m *Manager) Set(name []byte, v template.NewNode) *qerror.Error {
 	err := m.tree.Set(name, v)
 	if err != nil {
 		return err
@@ -31,7 +31,7 @@ func (m *Manager) Set(name []byte, v template.NewNode) qerror.Error {
 }
 
 //Get node in trie
-func (m *Manager) Get(name []byte) (template.NewNode, qerror.Error) {
+func (m *Manager) Get(name []byte) (template.NewNode, *qerror.Error) {
 	return m.tree.Get(name)
 }
 

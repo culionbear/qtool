@@ -25,7 +25,7 @@ func newListWithNode(n *node) *list {
 	}
 }
 
-func (m *list) set(key []byte, code uint32, value template.Node) qerror.Error {
+func (m *list) set(key []byte, code uint32, value template.Node) *qerror.Error {
 	if m.head.code == code && compare(m.head.key, key) {
 		return qerror.New(append(key, []byte(" is exists")...))
 	}
@@ -55,7 +55,7 @@ func (m *list) setX(key []byte, code uint32, value template.Node) int {
 	return 1
 }
 
-func (m *list) update(key []byte, code uint32, value template.Node) qerror.Error {
+func (m *list) update(key []byte, code uint32, value template.Node) *qerror.Error {
 	if m.head.code == code && compare(m.head.key, key) {
 		m.head.value = value
 		return nil
@@ -81,7 +81,7 @@ func (m *list) get(key []byte) *node {
 	return nil
 }
 
-func (m *list) del(key []byte) (bool, qerror.Error) {
+func (m *list) del(key []byte) (bool, *qerror.Error) {
 	if compare(m.head.key, key) {
 		if m.head.next == nil {
 			return true, nil

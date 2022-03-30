@@ -15,10 +15,10 @@ func newNode[T template.Object]() *node[T] {
 	return &node[T]{}
 }
 
-func (n *node[T]) add(buf []byte, i, length int, v T) qerror.Error {
+func (n *node[T]) add(buf []byte, i, length int, v T) *qerror.Error {
 	if length == i {
 		if !n.flag {
-			return qerror.Error("key is exists")
+			return qerror.NewString("key is exists")
 		}
 		n.value = v
 		n.flag = true
@@ -26,7 +26,7 @@ func (n *node[T]) add(buf []byte, i, length int, v T) qerror.Error {
 	}
 	k := int(buf[i] - 'a')
 	if k < 0 || k >= 26 {
-		return qerror.Error("the key must be lowercase")
+		return qerror.NewString("the key must be lowercase")
 	}
 	if n.children[k] == nil {
 		n.children[k] = newNode[T]()
@@ -34,19 +34,19 @@ func (n *node[T]) add(buf []byte, i, length int, v T) qerror.Error {
 	return n.children[k].add(buf, i+1, length, v)
 }
 
-func (n *node[T]) get(buf []byte, i, length int) (T, qerror.Error) {
+func (n *node[T]) get(buf []byte, i, length int) (T, *qerror.Error) {
 	if length == i {
 		if n.flag {
-			return n.value, qerror.Error("key is not found")
+			return n.value, qerror.NewString("key is not found")
 		}
 		return n.value, nil
 	}
 	k := int(buf[i] - 'a')
 	if k < 0 || k >= 26 {
-		return n.value, qerror.Error("the key must be lowercase")
+		return n.value, qerror.NewString("the key must be lowercase")
 	}
 	if n.children[k] == nil {
-		return n.value, qerror.Error("key is not found")
+		return n.value, qerror.NewString("key is not found")
 	}
 	return n.children[k].get(buf, i+1, length)
 }

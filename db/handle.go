@@ -7,7 +7,7 @@ import (
 )
 
 //Set value in table when value is not found before
-func Set(key []byte, value template.Node) qerror.Error {
+func Set(key []byte, value template.Node) *qerror.Error {
 	return m.Set(key, value)
 }
 
@@ -17,7 +17,7 @@ func SetX(key []byte, value template.Node) {
 }
 
 //Update value in table
-func Update(key []byte, value template.Node) qerror.Error {
+func Update(key []byte, value template.Node) *qerror.Error {
 	return m.Update(key, value)
 }
 
@@ -32,7 +32,7 @@ func Gets(keys ...[]byte) []template.Node {
 }
 
 //Del node in table with key
-func Del(key []byte) qerror.Error {
+func Del(key []byte) *qerror.Error {
 	return m.Del(key)
 }
 
@@ -57,12 +57,12 @@ func Iterators(key []byte, callBack func(hash.Node) bool) {
 }
 
 //Rename src to dst
-func Rename(dst, src []byte) qerror.Error {
+func Rename(dst, src []byte) *qerror.Error {
 	return m.Rename(dst, src)
 }
 
 //Cover src to dst, if dst is not found then rename src to dst
-func Cover(dst, src []byte) qerror.Error {
+func Cover(dst, src []byte) *qerror.Error {
 	return m.Cover(dst, src)
 }
 

@@ -12,12 +12,12 @@ func init() {
 }
 
 //Set class in trie
-func Set(name []byte, f template.Class) qerror.Error {
+func Set(name []byte, f template.Class) *qerror.Error {
 	return m.Set(name, f)
 }
 
 //Get class in trie
-func Get(name []byte) (template.Class, qerror.Error) {
+func Get(name []byte) (template.Class, *qerror.Error) {
 	return m.Get(name)
 }
 

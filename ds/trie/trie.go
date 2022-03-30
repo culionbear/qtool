@@ -15,11 +15,11 @@ func New[T template.Object]() *Manager[T] {
 	}
 }
 
-func (m *Manager[T]) Set(buf []byte, v T) qerror.Error {
+func (m *Manager[T]) Set(buf []byte, v T) *qerror.Error {
 	return m.head.add(buf, 0, len(buf), v)
 }
 
-func (m *Manager[T]) Get(buf []byte) (T, qerror.Error) {
+func (m *Manager[T]) Get(buf []byte) (T, *qerror.Error) {
 	return m.head.get(buf, 0, len(buf))
 }
 

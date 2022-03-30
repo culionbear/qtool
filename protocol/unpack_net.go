@@ -5,7 +5,7 @@ import (
 	"github.com/culionbear/qtool/qerror"
 )
 
-func (m *Manager) UnpackNet(buf []byte) (*queue.Manager[*CmdTree], qerror.Error) {
+func (m *Manager) UnpackNet(buf []byte) (*queue.Manager[*CmdTree], *qerror.Error) {
 	length := len(buf)
 	list := queue.New[*CmdTree]()
 	for i := 0; i < length; {
@@ -26,9 +26,9 @@ func (m *Manager) UnpackNet(buf []byte) (*queue.Manager[*CmdTree], qerror.Error)
 	return list, nil
 }
 
-func (m *Manager) unpackNet(length int, buf []byte) (*CmdTree, qerror.Error) {
+func (m *Manager) unpackNet(length int, buf []byte) (*CmdTree, *qerror.Error) {
 	cmd := NewCmdTree(queue.New[any]())
-	var err qerror.Error
+	var err *qerror.Error
 	for i := 0; i < length; {
 		if buf[i] == methodByte {
 			sum, step, err := m.readSize(i+1, length, buf)

@@ -12,12 +12,12 @@ func init() {
 }
 
 //Set node in trie
-func Set(name []byte, f template.NewNode) qerror.Error {
+func Set(name []byte, f template.NewNode) *qerror.Error {
 	return m.Set(name, f)
 }
 
 //Get node in trie
-func Get(buf []byte) (template.NewNode, qerror.Error) {
+func Get(buf []byte) (template.NewNode, *qerror.Error) {
 	return m.Get(buf)
 }
 

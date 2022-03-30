@@ -18,7 +18,7 @@ func (m *Manager) pack(module any) []byte {
 		return m.fromByte(msg)
 	case string:
 		return m.fromString(m.s2b(msg))
-	case qerror.Error:
+	case *qerror.Error:
 		return m.fromError(msg)
 	case bool:
 		return m.fromBool(msg)
@@ -30,7 +30,7 @@ func (m *Manager) pack(module any) []byte {
 		return m.fromString(msg)
 	case []string:
 		return m.fromStringList(msg)
-	case []qerror.Error:
+	case []*qerror.Error:
 		return m.fromErrorList(msg)
 	case []bool:
 		return m.fromBoolList(msg)
@@ -56,12 +56,12 @@ func (m *Manager) fromString(buf []byte) []byte {
 	return writer.Bytes()
 }
 
-func (m *Manager) fromError(buf qerror.Error) []byte {
+func (m *Manager) fromError(buf *qerror.Error) []byte {
 	writer := &bytes.Buffer{}
 	writer.WriteByte(errorByte)
-	size := len(buf)
+	size := buf.Size()
 	m.addNumber(writer, size)
-	writer.Write(buf)
+	writer.Write(buf.Msg())
 	return writer.Bytes()
 }
 
@@ -109,14 +109,14 @@ func (m *Manager) fromStringList(list []string) []byte {
 	return writer.Bytes()
 }
 
-func (m *Manager) fromErrorList(list []qerror.Error) []byte {
+func (m *Manager) fromErrorList(list []*qerror.Error) []byte {
 	writer := &bytes.Buffer{}
 	writer.WriteByte(listByte | errorByte)
 	size := len(list)
 	m.addNumber(writer, size)
 	for i := 0; i < size; i++ {
-		m.addNumber(writer, len(list[i]))
-		writer.Write(list[i])
+		m.addNumber(writer, list[i].Size())
+		writer.Write(list[i].Msg())
 	}
 	return writer.Bytes()
 }

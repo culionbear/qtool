@@ -51,7 +51,7 @@ func New(c persistence.Config) (m *Manager, err error) {
 }
 
 //Set 添加kv至map，若key存在则返回error
-func (m *Manager) Set(key []byte, value template.Node) qerror.Error {
+func (m *Manager) Set(key []byte, value template.Node) *qerror.Error {
 	code := hashCode(key)
 	i := code & uint32(m.cap-1)
 	if m.table[i] == nil {
@@ -86,7 +86,7 @@ func (m *Manager) SetX(key []byte, value template.Node) {
 }
 
 //Update 修改元素，若不存在则返回error
-func (m *Manager) Update(key []byte, value template.Node) qerror.Error {
+func (m *Manager) Update(key []byte, value template.Node) *qerror.Error {
 	code := hashCode(key)
 	i := code & uint32(m.cap-1)
 	if m.table[i] == nil {
@@ -119,7 +119,7 @@ func (m *Manager) Gets(keys ...[]byte) []template.Node {
 }
 
 //Del 删除元素, 若不存在则返回error
-func (m *Manager) Del(key []byte) qerror.Error {
+func (m *Manager) Del(key []byte) *qerror.Error {
 	code := hashCode(key)
 	i := code & uint32(m.cap-1)
 	if m.table[i] == nil {
@@ -212,7 +212,7 @@ func (m *Manager) Iterators(key []byte, f func(Node) bool) {
 }
 
 //Rename 重命名，若dst存在或src不存在则返回error
-func (m *Manager) Rename(dst, src []byte) qerror.Error {
+func (m *Manager) Rename(dst, src []byte) *qerror.Error {
 	sNode := m.get(src)
 	if sNode == nil {
 		return qerror.New(append(src, []byte(" is not found")...))
@@ -236,7 +236,7 @@ func (m *Manager) Rename(dst, src []byte) qerror.Error {
 }
 
 //Cover 将src覆盖至dst，若dst不存在则执行Rename， 若src不存在则返回error
-func (m *Manager) Cover(dst, src []byte) qerror.Error {
+func (m *Manager) Cover(dst, src []byte) *qerror.Error {
 	sNode := m.get(src)
 	if sNode == nil {
 		return qerror.New(append(src, []byte(" is not found")...))
