@@ -35,7 +35,7 @@ func addClass(plug *plugin.Plugin) error {
 		}
 	}
 	for _, v := range *classList {
-		if err = classes.Set(v.Name(), v); err != nil {
+		if err := classes.Set(v.Name(), v); err != nil {
 			return err
 		}
 	}
@@ -57,7 +57,7 @@ func addNode(plug *plugin.Plugin) error {
 		}
 	}
 	for k, v := range *nodeTable {
-		if err = nodes.Set([]byte(k), v); err != nil {
+		if err := nodes.Set([]byte(k), v); err != nil {
 			return err
 		}
 	}
