@@ -19,3 +19,9 @@ type Class interface {
 	ApiList() []Api
 	Name() []byte
 }
+
+type Func func(*queue.Manager[any]) any
+
+func (f Func) IsNil() bool {
+	return f == nil
+}
