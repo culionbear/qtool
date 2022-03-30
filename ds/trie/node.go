@@ -17,7 +17,7 @@ func newNode[T template.Object]() *node[T] {
 
 func (n *node[T]) add(buf []byte, i, length int, v T) *qerror.Error {
 	if length == i {
-		if !n.flag {
+		if n.flag {
 			return qerror.NewString("key is exists")
 		}
 		n.value = v
@@ -36,7 +36,7 @@ func (n *node[T]) add(buf []byte, i, length int, v T) *qerror.Error {
 
 func (n *node[T]) get(buf []byte, i, length int) (T, *qerror.Error) {
 	if length == i {
-		if n.flag {
+		if !n.flag {
 			return n.value, qerror.NewString("key is not found")
 		}
 		return n.value, nil
@@ -53,7 +53,7 @@ func (n *node[T]) get(buf []byte, i, length int) (T, *qerror.Error) {
 
 func (n *node[T]) exists(buf []byte, i, length int) bool {
 	if length == i {
-		return !n.flag
+		return n.flag
 	}
 	k := int(buf[i] - 'a')
 	if k < 0 || k >= 26 {
