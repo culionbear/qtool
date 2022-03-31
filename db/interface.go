@@ -38,7 +38,7 @@ type Table interface {
 
 var m Table
 
-func InitDB(c persistence.Config) (err error) {
+func InitDB(c persistence.Config) (err *qerror.Error) {
 	m, err = hash.New(c)
 	return err
 }
