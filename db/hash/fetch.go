@@ -5,20 +5,20 @@ import (
 	"github.com/culionbear/qtool/qerror"
 )
 
-type cmdFunc func([][]byte) error
+type cmdFunc func([][]byte) *qerror.Error
 
 func (m cmdFunc) IsNil() bool {
 	return m == nil
 }
 
-func (m *Manager) fetch(cmd uint8, info [][]byte) error {
+func (m *Manager) fetch(cmd uint8, info [][]byte) *qerror.Error {
 	if f := m.cmdTable[cmd]; f != nil {
 		return f(info)
 	}
 	return qerror.NewString("cmd is not found")
 }
 
-func (m *Manager) fetchSet(info [][]byte) error {
+func (m *Manager) fetchSet(info [][]byte) *qerror.Error {
 	if len(info) != 3 {
 		return qerror.NewString("info length is error")
 	}
@@ -37,7 +37,7 @@ func (m *Manager) fetchSet(info [][]byte) error {
 	return m.Set(info[0], n)
 }
 
-func (m *Manager) fetchSetX(info [][]byte) error {
+func (m *Manager) fetchSetX(info [][]byte) *qerror.Error {
 	if len(info) != 3 {
 		return qerror.NewString("info length is error")
 	}
@@ -57,7 +57,7 @@ func (m *Manager) fetchSetX(info [][]byte) error {
 	return nil
 }
 
-func (m *Manager) fetchUpdate(info [][]byte) error {
+func (m *Manager) fetchUpdate(info [][]byte) *qerror.Error {
 	if len(info) != 3 {
 		return qerror.NewString("info length is error")
 	}
@@ -76,14 +76,14 @@ func (m *Manager) fetchUpdate(info [][]byte) error {
 	return m.Update(info[0], n)
 }
 
-func (m *Manager) fetchDel(info [][]byte) error {
+func (m *Manager) fetchDel(info [][]byte) *qerror.Error {
 	if len(info) != 1 {
 		return qerror.NewString("info length is error")
 	}
 	return m.Del(info[0])
 }
 
-func (m *Manager) fetchDels(info [][]byte) error {
+func (m *Manager) fetchDels(info [][]byte) *qerror.Error {
 	if len(info) == 0 {
 		return qerror.NewString("info length is error")
 	}
@@ -91,14 +91,14 @@ func (m *Manager) fetchDels(info [][]byte) error {
 	return nil
 }
 
-func (m *Manager) fetchRename(info [][]byte) error {
+func (m *Manager) fetchRename(info [][]byte) *qerror.Error {
 	if len(info) != 2 {
 		return qerror.NewString("info length is error")
 	}
 	return m.Rename(info[0], info[1])
 }
 
-func (m *Manager) fetchCover(info [][]byte) error {
+func (m *Manager) fetchCover(info [][]byte) *qerror.Error {
 	if len(info) != 2 {
 		return qerror.NewString("info length is error")
 	}

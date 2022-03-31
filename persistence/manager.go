@@ -70,10 +70,10 @@ func (m *Manager) Save(cmd uint8, args []any) {
 }
 
 //Fetch local in table
-func (m *Manager) Fetch(f func(uint8, [][]byte) error) error {
+func (m *Manager) Fetch(f func(uint8, [][]byte) *qerror.Error) *qerror.Error {
 	buf, err := m.readAll()
 	if err != nil {
-		return err
+		return qerror.CopyError(err)
 	}
 	length, success, all := uint64(len(buf)), 0, 0
 	for i := uint64(0); i < length; all++ {
@@ -100,7 +100,7 @@ func (m *Manager) Fetch(f func(uint8, [][]byte) error) error {
 			list = append(list, m.copyAll(buf[j:j+pSize]))
 			j += pSize
 		}
-		if err = f(cmd, list); err.(*qerror.Error) != nil {
+		if err = f(cmd, list); err != nil {
 			logs.PrintError(err)
 		} else {
 			success++
