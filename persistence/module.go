@@ -5,7 +5,7 @@ import (
 	"github.com/culionbear/qtool/template"
 )
 
-type moduleFunc func(*module) ([]byte, error)
+type moduleFunc func(*module) ([]byte, *qerror.Error)
 
 func (m moduleFunc) IsNil() bool {
 	return m == nil
@@ -23,7 +23,7 @@ func newModule(cmd uint8, values []any) *module {
 	}
 }
 
-func (m *Manager) getSetModule(msg *module) ([]byte, error) {
+func (m *Manager) getSetModule(msg *module) ([]byte, *qerror.Error) {
 	if len(msg.Values) != 2 {
 		return nil, qerror.NewString("values length is error")
 	}
@@ -38,7 +38,7 @@ func (m *Manager) getSetModule(msg *module) ([]byte, error) {
 	return serializeNodeModule(CmdSet, k, n), nil
 }
 
-func (m *Manager) getSetXModule(msg *module) ([]byte, error) {
+func (m *Manager) getSetXModule(msg *module) ([]byte, *qerror.Error) {
 	if len(msg.Values) != 2 {
 		return nil, qerror.NewString("values length is error")
 	}
@@ -53,7 +53,7 @@ func (m *Manager) getSetXModule(msg *module) ([]byte, error) {
 	return serializeNodeModule(CmdSetX, k, n), nil
 }
 
-func (m *Manager) getUpdateModule(msg *module) ([]byte, error) {
+func (m *Manager) getUpdateModule(msg *module) ([]byte, *qerror.Error) {
 	if len(msg.Values) != 2 {
 		return nil, qerror.NewString("values length is error")
 	}
@@ -68,7 +68,7 @@ func (m *Manager) getUpdateModule(msg *module) ([]byte, error) {
 	return serializeNodeModule(CmdUpdate, k, n), nil
 }
 
-func (m *Manager) getDelModule(msg *module) ([]byte, error) {
+func (m *Manager) getDelModule(msg *module) ([]byte, *qerror.Error) {
 	if len(msg.Values) != 1 {
 		return nil, qerror.NewString("values length is error")
 	}
@@ -79,7 +79,7 @@ func (m *Manager) getDelModule(msg *module) ([]byte, error) {
 	return serializeBytesModule(CmdDel, k), nil
 }
 
-func (m *Manager) getDelsModule(msg *module) ([]byte, error) {
+func (m *Manager) getDelsModule(msg *module) ([]byte, *qerror.Error) {
 	if len(msg.Values) != 0 {
 		return nil, qerror.NewString("values length is error")
 	}
@@ -94,7 +94,7 @@ func (m *Manager) getDelsModule(msg *module) ([]byte, error) {
 	return serializeBytesModule(CmdDel, list...), nil
 }
 
-func (m *Manager) getRenameModule(msg *module) ([]byte, error) {
+func (m *Manager) getRenameModule(msg *module) ([]byte, *qerror.Error) {
 	if len(msg.Values) != 2 {
 		return nil, qerror.NewString("values length is error")
 	}
@@ -109,7 +109,7 @@ func (m *Manager) getRenameModule(msg *module) ([]byte, error) {
 	return serializeBytesModule(CmdRename, k1, k2), nil
 }
 
-func (m *Manager) getCoverModule(msg *module) ([]byte, error) {
+func (m *Manager) getCoverModule(msg *module) ([]byte, *qerror.Error) {
 	if len(msg.Values) != 2 {
 		return nil, qerror.NewString("values length is error")
 	}

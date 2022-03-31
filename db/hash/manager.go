@@ -26,7 +26,7 @@ type Manager struct {
 	cmdTable  *persistence.CmdOpt[cmdFunc]
 }
 
-func New(c persistence.Config) (m *Manager, err error) {
+func New(c persistence.Config) (m *Manager, err *qerror.Error) {
 	m = &Manager{
 		size:      0,
 		threshold: defaultInitialCapacity * defaultLoadFactor,

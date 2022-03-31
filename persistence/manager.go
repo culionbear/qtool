@@ -15,23 +15,8 @@ type Manager struct {
 	cmdTable   *CmdOpt[moduleFunc]
 }
 
-//New Manager
-func New(path string) (*Manager, error) {
-	m := &Manager{}
-	m.cmdTable = &CmdOpt[moduleFunc]{
-		CmdSet:    m.getSetModule,
-		CmdSetX:   m.getSetXModule,
-		CmdUpdate: m.getUpdateModule,
-		CmdDel:    m.getDelModule,
-		CmdDels:   m.getDelsModule,
-		CmdRename: m.getRenameModule,
-		CmdCover:  m.getCoverModule,
-	}
-	return m, m.initConfig(path)
-}
-
 //NewWithConfig to Manager
-func NewWithConfig(c Config) (*Manager, error) {
+func NewWithConfig(c Config) (*Manager, *qerror.Error) {
 	if c.AofTimer < 1 {
 		c.AofTimer = 1
 	}

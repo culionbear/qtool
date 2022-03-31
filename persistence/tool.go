@@ -16,16 +16,7 @@ const (
 	fileQdb = ".qdb"
 )
 
-//Init persistence Manager with config path
-func (m *Manager) initConfig(path string) error {
-	err := NewConfig(path, &m.info)
-	if err != nil {
-		return err
-	}
-	return m.initAof()
-}
-
-func (m *Manager) initAof() error {
+func (m *Manager) initAof() *qerror.Error {
 	if m.info.AofPath == "" {
 		m.info.AofPath = "/etc/qlite/database.aof"
 	}
@@ -78,43 +69,44 @@ func (m *Manager) runAof() {
 	}
 }
 
-func (m *Manager) judgeSuffix(path, suffix string) error {
+func (m *Manager) judgeSuffix(path, suffix string) *qerror.Error {
 	if strings.LastIndex(path, suffix) == -1 {
 		return qerror.NewString("suffix error")
 	}
 	return nil
 }
 
-func (m *Manager) judgeFile(path string) error {
+func (m *Manager) judgeFile(path string) *qerror.Error {
 	_, err := os.Stat(path)
 	if err != nil {
 		if os.IsExist(err) {
 			return nil
 		}
-		return err
+		return qerror.CopyError(err)
 	}
 	return nil
 }
 
-func (m *Manager) createFile(path string) error {
+func (m *Manager) createFile(path string) *qerror.Error {
 	_, err := os.Create(path)
-	return err
+	return qerror.CopyError(err)
 }
 
-func (m *Manager) serialize(msg *module) ([]byte, error) {
+func (m *Manager) serialize(msg *module) ([]byte, *qerror.Error) {
 	if f := m.cmdTable.Get(msg.Cmd); f != nil {
 		return f(msg)
 	}
 	return nil, qerror.NewString("cmd is not found")
 }
 
-func (m *Manager) readAll() ([]byte, error) {
+func (m *Manager) readAll() ([]byte, *qerror.Error) {
 	fp, err := os.Open(m.info.AofPath)
 	if err != nil {
-		return nil, err
+		return nil, qerror.CopyError(err)
 	}
 	defer fp.Close()
-	return io.ReadAll(fp)
+	buf, err := io.ReadAll(fp)
+	return buf, qerror.CopyError(err)
 }
 
 func (m *Manager) copyAll(buf []byte) []byte {
