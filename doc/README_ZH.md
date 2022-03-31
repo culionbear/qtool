@@ -1,6 +1,6 @@
 <div align=center><img src="../image/qlite.png"/></div>
 
-# QTOOL
+# QTOOL ![](https://img.shields.io/github/stars/culionbear/qtool?style=social)
 
 ![](https://img.shields.io/github/go-mod/go-version/culionbear/qtool)
 ![](https://goreportcard.com/badge/github.com/culionbear/qtool)
