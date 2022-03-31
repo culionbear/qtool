@@ -1,6 +1,6 @@
 <div align=center><img src="./image/qlite.png"/></div>
 
-# QTOOL
+# QTOOL ![](https://img.shields.io/github/stars/culionbear/qtool?style=social)
 
 ![](https://img.shields.io/github/go-mod/go-version/culionbear/qtool)
 ![](https://goreportcard.com/badge/github.com/culionbear/qtool)
@@ -8,7 +8,6 @@
 ![](https://img.shields.io/github/last-commit/culionbear/qtool)
 ![](https://img.shields.io/tokei/lines/github/culionbear/qtool)
 ![](https://img.shields.io/github/v/release/culionbear/qtool?include_prereleases)
-![](https://img.shields.io/github/stars/culionbear/qtool?style=social)
 
 Dependency packages for QLite Databse
 
