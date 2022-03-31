@@ -1,5 +1,10 @@
 package qerror
 
+import (
+	"reflect"
+	"unsafe"
+)
+
 // import (
 // 	"reflect"
 // 	"unsafe"
@@ -37,20 +42,22 @@ func Copy(src []byte) *Error {
 
 //NewString new error to string
 func NewString(msg string) *Error {
-	// /* #nosec G103 */
-	// errH := (*reflect.SliceHeader)(unsafe.Pointer(&err))
-	// /* #nosec G103 */
-	// sh := (*reflect.StringHeader)(unsafe.Pointer(&msg))
-	// errH.Data = sh.Data
-	// errH.Cap = sh.Len
-	// errH.Len = sh.Len
+	b := make([]byte, len(msg))
+	bh := (*reflect.SliceHeader)(unsafe.Pointer(&b))
+	sh := (*reflect.StringHeader)(unsafe.Pointer(&msg))
+	bh.Data = sh.Data
+	bh.Cap = sh.Len
+	bh.Len = sh.Len
 	return &Error{
-		msg: []byte(msg),
+		msg: b,
 	}
 }
 
 //CopyError to Error
 func CopyError(err error) *Error {
+	if err == nil {
+		return nil
+	}
 	return NewString(err.Error())
 }
 
