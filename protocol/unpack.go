@@ -77,7 +77,7 @@ func (m *Manager) unpack(q *queue.Manager[any], i, size int, buf []byte) (int, *
 		if j+sum > size {
 			return 0, qerror.NewString("package length is error")
 		}
-		q.Push(m.copyBuf(buf[j : j+sum]))
+		q.Push(string(buf[j : j+sum]))
 		return j + sum, nil
 	case errorByte:
 		sum, j, err := m.readSize(i+1, size, buf)
