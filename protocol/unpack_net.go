@@ -44,6 +44,7 @@ func (m *Manager) unpackNet(length int, buf []byte) (*CmdTree, *qerror.Error) {
 				return nil, err
 			}
 			cmd.PushChild(cCmd)
+			continue
 		}
 		i, err = m.unpack(cmd.cmd, i, length, buf)
 		if err != nil {
