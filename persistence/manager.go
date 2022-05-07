@@ -8,8 +8,8 @@ import (
 //Manager persistence
 type Manager struct {
 	info       Config
-	aofCh      chan *module
-	aofCloseCh chan bool
+	qdbCh      chan *module
+	qdbCloseCh chan bool
 	closeCh    chan bool
 	isRun      bool
 	cmdTable   *CmdOpt[moduleFunc]
@@ -17,8 +17,8 @@ type Manager struct {
 
 //NewWithConfig to Manager
 func NewWithConfig(c Config) (*Manager, *qerror.Error) {
-	if c.AofTimer < 1 {
-		c.AofTimer = 1
+	if c.QdbTimer < 1 {
+		c.QdbTimer = 1
 	}
 	m := &Manager{
 		info: c,
@@ -43,14 +43,14 @@ func (m *Manager) Run() {
 
 //Close persistence Manager
 func (m *Manager) Close() {
-	m.aofCloseCh <- true
+	m.qdbCloseCh <- true
 	<-m.closeCh
 }
 
 //Save logs in local
 func (m *Manager) Save(cmd uint8, args []any) {
 	if m.isRun {
-		m.aofCh <- newModule(cmd, args)
+		m.qdbCh <- newModule(cmd, args)
 	}
 }
 

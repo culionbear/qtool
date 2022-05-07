@@ -17,27 +17,27 @@ const (
 )
 
 func (m *Manager) initAof() *qerror.Error {
-	if m.info.AofPath == "" {
-		m.info.AofPath = "/etc/qlite/database.aof"
+	if m.info.QdbPath == "" {
+		m.info.QdbPath = "/etc/qlite/database.aof"
 	}
-	if m.info.AofTimer < 1 {
-		m.info.AofTimer = 1
+	if m.info.QdbTimer < 1 {
+		m.info.QdbTimer = 1
 	}
-	if err := m.judgeSuffix(m.info.AofPath, fileAof); err != nil {
+	if err := m.judgeSuffix(m.info.QdbPath, fileAof); err != nil {
 		return err
 	}
-	if err := m.judgeFile(m.info.AofPath); err != nil {
-		if err = m.createFile(m.info.AofPath); err != nil {
+	if err := m.judgeFile(m.info.QdbPath); err != nil {
+		if err = m.createFile(m.info.QdbPath); err != nil {
 			return err
 		}
 	}
-	m.aofCh = make(chan *module, 100000)
-	m.aofCloseCh = make(chan bool)
+	m.qdbCh = make(chan *module, 100000)
+	m.qdbCloseCh = make(chan bool)
 	return nil
 }
 
 func (m *Manager) runAof() {
-	fp, err := os.OpenFile(m.info.AofPath, os.O_WRONLY|os.O_APPEND, 0666)
+	fp, err := os.OpenFile(m.info.QdbPath, os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		logs.PrintError(err)
 		return
@@ -49,18 +49,18 @@ func (m *Manager) runAof() {
 
 	writer := bufio.NewWriter(fp)
 
-	timer := time.NewTicker(time.Duration(m.info.AofTimer) * time.Second)
+	timer := time.NewTicker(time.Duration(m.info.QdbTimer) * time.Second)
 
 	for {
 		select {
-		case msg := <-m.aofCh:
+		case msg := <-m.qdbCh:
 			buf, err := m.serialize(msg)
 			if err != nil {
 				logs.PrintError(err)
 				continue
 			}
 			writer.Write(buf)
-		case <-m.aofCloseCh:
+		case <-m.qdbCloseCh:
 			_ = writer.Flush()
 			return
 		case <-timer.C:
@@ -100,7 +100,7 @@ func (m *Manager) serialize(msg *module) ([]byte, *qerror.Error) {
 }
 
 func (m *Manager) readAll() ([]byte, *qerror.Error) {
-	fp, err := os.Open(m.info.AofPath)
+	fp, err := os.Open(m.info.QdbPath)
 	if err != nil {
 		return nil, qerror.CopyError(err)
 	}
