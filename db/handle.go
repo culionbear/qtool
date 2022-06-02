@@ -70,3 +70,8 @@ func Cover(dst, src []byte) *qerror.Error {
 func Exist(key []byte) bool {
 	return m.Exist(key)
 }
+
+//Size
+func Size() int {
+	return m.Size()
+}

@@ -34,6 +34,8 @@ type Table interface {
 	Cover([]byte, []byte) *qerror.Error
 	//Exist key
 	Exist([]byte) bool
+	//Size
+	Size() int
 }
 
 var m Table
