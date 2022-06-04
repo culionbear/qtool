@@ -12,18 +12,17 @@ import (
 )
 
 const (
-	fileAof = ".aof"
 	fileQdb = ".qdb"
 )
 
-func (m *Manager) initAof() *qerror.Error {
+func (m *Manager) initQdb() *qerror.Error {
 	if m.info.QdbPath == "" {
-		m.info.QdbPath = "/etc/qlite/database.aof"
+		m.info.QdbPath = "/etc/qlite/database.qdb"
 	}
 	if m.info.QdbTimer < 1 {
 		m.info.QdbTimer = 1
 	}
-	if err := m.judgeSuffix(m.info.QdbPath, fileAof); err != nil {
+	if err := m.judgeSuffix(m.info.QdbPath, fileQdb); err != nil {
 		return err
 	}
 	if err := m.judgeFile(m.info.QdbPath); err != nil {
@@ -36,7 +35,7 @@ func (m *Manager) initAof() *qerror.Error {
 	return nil
 }
 
-func (m *Manager) runAof() {
+func (m *Manager) runQdb() {
 	fp, err := os.OpenFile(m.info.QdbPath, os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		logs.PrintError(err)

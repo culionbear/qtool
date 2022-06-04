@@ -32,13 +32,13 @@ func NewWithConfig(c Config) (*Manager, *qerror.Error) {
 		CmdRename: m.getRenameModule,
 		CmdCover:  m.getCoverModule,
 	}
-	return m, m.initAof()
+	return m, m.initQdb()
 }
 
 //Run aof gorountie
 func (m *Manager) Run() {
 	m.isRun = true
-	go m.runAof()
+	go m.runQdb()
 }
 
 //Close persistence Manager
