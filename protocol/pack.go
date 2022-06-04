@@ -28,6 +28,8 @@ func (m *Manager) pack(module any) []byte {
 		return m.fromFloat(msg)
 	case []byte:
 		return m.fromString(msg)
+	case [][]byte:
+		return m.fromByteArrayList(msg)
 	case []string:
 		return m.fromStringList(msg)
 	case []*qerror.Error:
@@ -105,6 +107,18 @@ func (m *Manager) fromStringList(list []string) []byte {
 	for i := 0; i < size; i++ {
 		m.addNumber(writer, len(list[i]))
 		writer.Write(m.s2b(list[i]))
+	}
+	return writer.Bytes()
+}
+
+func (m *Manager) fromByteArrayList(list [][]byte) []byte {
+	writer := &bytes.Buffer{}
+	writer.WriteByte(listByte | stringByte)
+	size := len(list)
+	m.addNumber(writer, size)
+	for i := 0; i < size; i++ {
+		m.addNumber(writer, len(list[i]))
+		writer.Write(list[i])
 	}
 	return writer.Bytes()
 }
