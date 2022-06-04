@@ -18,7 +18,7 @@ const (
 )
 
 type Manager struct {
-	table     []*list
+	table     []store
 	cap       int
 	threshold int
 	size      int
@@ -31,7 +31,7 @@ func New(c persistence.Config) (m *Manager, err *qerror.Error) {
 		size:      0,
 		threshold: defaultInitialCapacity * defaultLoadFactor,
 		cap:       defaultInitialCapacity,
-		table:     make([]*list, defaultInitialCapacity),
+		table:     make([]store, defaultInitialCapacity),
 	}
 	m.cmdTable = &persistence.CmdOpt[cmdFunc]{
 		persistence.CmdSet:    m.fetchSet,
@@ -159,54 +159,23 @@ func (m *Manager) Regexp(str []byte) [][]byte {
 		if m.table[i] != nil {
 			continue
 		}
-		for n := m.table[i].head; n != nil; n, sum = n.next, sum+1 {
-			if r.Match(n.key) {
-				list = append(list, n.Key())
-			}
-		}
+		list = append(list, m.table[i].regexp(r)...)
 	}
 	return list
 }
 
-//Iterator 获取迭代器
-func (m *Manager) Iterator(key []byte) Node {
-	if m.size == 0 {
-		return nil
-	}
-	if key == nil {
-		for _, v := range m.table {
-			if v != nil {
-				return v.head
-			}
-		}
-	}
-	return m.get(key)
-}
-
 //Iterators 从key开始进行迭代器遍历
-func (m *Manager) Iterators(key []byte, f func(Node) bool) {
+func (m *Manager) Iterators(f func(Node) bool) {
 	if m.size == 0 {
 		return
 	}
 	var start, sum int
-	if key != nil {
-		n := m.get(key)
-		start = (int(n.code) & (m.cap - 1)) + 1
-		for k := n; k != nil; k = k.next {
-			sum++
-			if !f(k) {
-				return
-			}
-		}
-	}
 	for i, num := start, sum; i < m.cap && num < m.size; i++ {
 		if m.table[i] == nil {
 			continue
 		}
-		for n := m.table[i].head; n != nil; n, num = n.next, num+1 {
-			if !f(n) {
-				return
-			}
+		if !m.table[i].iterators(f) {
+			return
 		}
 	}
 }

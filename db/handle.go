@@ -46,14 +46,9 @@ func Regexp(rex []byte) [][]byte {
 	return m.Regexp(rex)
 }
 
-//Get Iterator with key
-func Iterator(key []byte) hash.Node {
-	return m.Iterator(key)
-}
-
 //Range iterators
-func Iterators(key []byte, callBack func(hash.Node) bool) {
-	m.Iterators(key, callBack)
+func Iterators(callBack func(hash.Node) bool) {
+	m.Iterators(callBack)
 }
 
 //Rename src to dst

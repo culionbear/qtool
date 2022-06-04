@@ -24,10 +24,8 @@ type Table interface {
 	Dels(...[]byte) int
 	//Regexp string to get value in table
 	Regexp([]byte) [][]byte
-	//Get Iterator with key
-	Iterator([]byte) hash.Node
 	//Range iterators
-	Iterators([]byte, func(hash.Node) bool)
+	Iterators(func(hash.Node) bool)
 	//Rename src to dst
 	Rename([]byte, []byte) *qerror.Error
 	//Cover src to dst, if dst is not found then rename src to dst

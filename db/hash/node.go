@@ -5,10 +5,10 @@ import (
 )
 
 type node struct {
-	key        []byte
-	value      template.Node
-	code       uint32
-	last, next *node
+	key         []byte
+	value       template.Node
+	code        uint32
+	left, right *node
 }
 
 func newNode(key []byte, code uint32, value template.Node, last *node) *node {
@@ -16,7 +16,7 @@ func newNode(key []byte, code uint32, value template.Node, last *node) *node {
 		key:   key,
 		value: value,
 		code:  code,
-		last:  last,
+		left:  last,
 	}
 }
 

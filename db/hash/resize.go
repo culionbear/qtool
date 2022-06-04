@@ -30,13 +30,13 @@ func (m *Manager) resize() {
 		}
 	}
 	m.threshold = newThr
-	newTable := make([]*list, newCap)
+	newTable := make([]store, newCap)
 	for i := 0; i < oldCap; i++ {
 		if m.table[i] == nil {
 			continue
 		}
-		if m.table[i].head.next == nil {
-			newTable[m.table[i].head.code&uint32(newCap-1)] = m.table[i]
+		if m.table[i].onlyOne() {
+			newTable[m.table[i].getHeadCode()&uint32(newCap-1)] = m.table[i]
 		} else {
 			newTable[i], newTable[i+oldCap] = m.table[i].resize(uint32(oldCap))
 		}
